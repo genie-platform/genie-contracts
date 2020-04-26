@@ -1,0 +1,43 @@
+{
+  "name": "genie-contracts",
+  "version": "0.1.0",
+  "description": "Smart contracts of the Genie",
+  "main": "index.js",
+  "scripts": {
+    "test": "truffle test",
+    "build": "truffle compile",
+    "compile": "truffle compile",
+    "deploy-dev": "truffle migrate --network development",
+    "deploy-ropsten": "truffle migrate --network ropsten",
+    "deploy-fuse": "truffle migrate --network fuse",
+    "deploy-mainnet": "truffle migrate --network mainnet"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/genie-platform/genie-contracts.git"
+  },
+  "standard": {
+    "env": {
+      "mocha": true,
+      "truffle/globals": true
+    },
+    "plugins": [
+      "truffle"
+    ]
+  },
+  "author": "genie-platform",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/genie-platform/genie-contracts/issues"
+  },
+  "homepage": "https://github.com/genie-platform/genie-contracts#readme",
+  "dependencies": {
+    "openzeppelin-solidity": "^3.0.0",
+    "truffle": "^5.1.23"
+  },
+  "devDependencies": {
+    "eslint-plugin-truffle": "^0.3.1",
+    "solc": "^0.6.6",
+    "truffle-assertions": "^0.9.2"
+  }
+}
