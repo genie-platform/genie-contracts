@@ -1,6 +1,7 @@
 pragma solidity ^0.6.0;
 
 import "openzeppelin-solidity/contracts/access/Ownable.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "./compound/ICErc20.sol";
 
@@ -66,6 +67,14 @@ contract Funding is Ownable {
 
     cToken = ICErc20(_cToken);
     operator = _operator;
+  }
+
+  /**
+   * @notice Returns the token underlying the cToken.
+   * @return An ERC20 token address
+   */
+  function token() public view returns (IERC20) {
+    return IERC20(cToken.underlying());
   }
 
   function deposit() public {
