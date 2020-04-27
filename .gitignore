@@ -105,3 +105,4 @@ dist
 
 # Not needed with yarn
 package-lock.json
+.openzeppelin/.session

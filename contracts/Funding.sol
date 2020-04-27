@@ -8,6 +8,33 @@ contract Funding is Ownable {
 
   using SafeMath for uint256;
 
+
+  /**
+   * Emitted when a user deposits into the Pool.
+   * @param sender The purchaser of the tickets
+   * @param amount The size of the deposit
+   */
+  event Deposited(address indexed sender, uint256 amount);
+
+    /**
+   * Emitted when a user withdraws from the pool.
+   * @param sender The user that is withdrawing from the pool
+   * @param amount The amount that the user withdrew
+   */
+  event Withdrawn(address indexed sender, uint256 amount);
+
+  /**
+   * Emitted when a draw is rewarded.
+   * @param winner The address of the winner
+   * @param winnings The net winnings given to the winner
+   * @param fee The fee being given to the draw beneficiary
+   */
+  event Rewarded(
+    address indexed winner,
+    uint256 winnings,
+    uint256 fee
+  );
+
   /**
    * Contract's operator
    */
@@ -33,7 +60,11 @@ contract Funding is Ownable {
     _;
   }
 
-  constructor(address _operator) public {
+  constructor(address _cToken, address _operator) public {
+    require(_cToken != address(0), "Funding/ctoken-zero");
+    require(_cToken != address(0), "Funding/ctoken-zero");
+
+    cToken = ICErc20(_cToken);
     operator = _operator;
   }
 
@@ -58,8 +89,8 @@ contract Funding is Ownable {
     accountedBalance = accountedBalance.add(_amount);
 
     // Deposit into Compound
-    // require(token().approve(address(cToken), _amount), "Pool/approve");
-    // require(cToken.mint(_amount) == 0, "Pool/supply");
+    // require(token().approve(address(cToken), _amount), "Funding/approve");
+    // require(cToken.mint(_amount) == 0, "Funding/supply");
   }
 
   function reward() public onlyOperator {
