@@ -125,8 +125,8 @@ contract Funding is Ownable, ReentrancyGuard {
     accountedBalance = accountedBalance.add(_amount);
 
     // Deposit into Compound
-    // require(token().approve(address(cToken), _amount), "Funding/approve");
-    // require(cToken.mint(_amount) == 0, "Funding/supply");
+    require(token().approve(address(cToken), _amount), "Funding/approve");
+    require(cToken.mint(_amount) == 0, "Funding/supply");
   }
 
     /**
@@ -143,10 +143,9 @@ contract Funding is Ownable, ReentrancyGuard {
     // Update the total of this contract
     accountedBalance = accountedBalance.sub(_amount);
 
-    require(token().transfer(_sender, _amount), "Funding/transfer");
     // Withdraw from Compound and transfer
-    // require(cToken.redeemUnderlying(_amount) == 0, "Pool/redeem");
-    // require(token().transfer(_sender, _amount), "Pool/transfer");
+    require(cToken.redeemUnderlying(_amount) == 0, "Funding/redeem");
+    require(token().transfer(_sender, _amount), "Funding/transfer");
   }
 
   function reward() public onlyOperator {

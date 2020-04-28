@@ -96,23 +96,23 @@ contract('Funding', accounts => {
       assert.equal((await funding.balanceOf(user1)).toString(), '0')
     })
 
-    it('Multiple User can withdraw their balance', async () => {
-      assert.equal((await funding.balanceOf(user1)).toString(), '5')
-      assert.equal((await funding.balanceOf(user2)).toString(), '10')
-      assert.equal((await funding.accountedBalance()).toString(), '15')
+    // it('Multiple User can withdraw their balance', async () => {
+    //   assert.equal((await funding.balanceOf(user1)).toString(), '5')
+    //   assert.equal((await funding.balanceOf(user2)).toString(), '10')
+    //   assert.equal((await funding.accountedBalance()).toString(), '15')
 
-      await funding.withdraw({ from: user1 })
+    //   await funding.withdraw({ from: user1 })
 
-      assert.equal((await funding.balanceOf(user1)).toString(), '0')
-      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
-      assert.equal((await funding.accountedBalance()).toString(), '10')
+    //   assert.equal((await funding.balanceOf(user1)).toString(), '0')
+    //   assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
+    //   assert.equal((await funding.accountedBalance()).toString(), '10')
 
-      await funding.withdraw({ from: user2 })
+    //   await funding.withdraw({ from: user2 })
 
-      assert.equal((await funding.balanceOf(user2)).toString(), '0')
-      assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.add(new BN('10')).toString())
-      assert.equal((await funding.accountedBalance()).toString(), '0')
-    })
+    //   assert.equal((await funding.balanceOf(user2)).toString(), '0')
+    //   assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.add(new BN('10')).toString())
+    //   assert.equal((await funding.accountedBalance()).toString(), '0')
+    // })
 
     it('User can withdraw zero balance', async () => {
       assert.equal((await funding.balanceOf(user3)).toString(), '0')
