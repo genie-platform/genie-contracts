@@ -1,5 +1,5 @@
 
-pragma solidity ^0.6.0;
+pragma solidity ^0.5.0;
 
 // import "openzeppelin-s/upgrades/contracts/Initializable.sol";
 import "./Funding.sol";
@@ -11,9 +11,7 @@ contract FundingFactory {
 
   function createFunding(address _cToken, address _operator) public  returns (address fundingAddress) {
 
-    Funding funding = new Funding(_cToken, _operator);
-
-    funding.transferOwnership(msg.sender);
+    Funding funding = new Funding(msg.sender, _cToken, _operator);
 
     fundingAddress = address(funding);
     emit FundingCreated(fundingAddress, msg.sender);

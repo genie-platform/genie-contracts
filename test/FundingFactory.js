@@ -32,8 +32,8 @@ contract('FundingFactory', accounts => {
   describe('#createFunding', () => {
     it('User can create funding', async () => {
       const { funding } = await createFunding(factory, [moneyMarket.address, operator])
-      assert.equal(await funding.operator(), operator)
-      assert.equal(await funding.owner(), owner)
+      assert.equal(await funding.operator(), operator, 'operator initialized')
+      assert.equal(await funding.owner(), owner, 'owner initialized')
     })
   })
 })
