@@ -1,0 +1,16 @@
+{
+  "name": "genie-contracts-abi",
+  "version": "0.1.1",
+  "description": "ABI for smart contracts of the Genie",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/genie-platform/genie-contracts.git"
+  },
+  "author": "genie-platform",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/genie-platform/genie-contracts/issues"
+  },
+  "homepage": "https://github.com/genie-platform/genie-contracts#readme"
+}
