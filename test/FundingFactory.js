@@ -18,14 +18,13 @@ contract('FundingFactory', accounts => {
   const owner = accounts[0]
   const operator = accounts[1]
 
-  let factory, token, moneyMarket
+  let factory, moneyMarket
 
   const fundingContext = new FundingContext({ web3, artifacts, accounts })
 
   beforeEach(async () => {
     factory = await FundingFactory.new(operator)
     await fundingContext.init()
-    token = fundingContext.token
     moneyMarket = fundingContext.moneyMarket
   })
 

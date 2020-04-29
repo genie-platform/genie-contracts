@@ -1,7 +1,5 @@
 const BN = require('bn.js')
 const {
-  SECRET,
-  SECRET_HASH,
   SUPPLY_RATE_PER_BLOCK,
   MAX_NEW_FIXED
 } = require('./constants')
@@ -14,7 +12,6 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
   const [owner, admin, user1, user2, user3] = accounts
 
   const Token = artifacts.require('Token.sol')
-  const Funding = artifacts.require('Funding.sol')
   const CErc20Mock = artifacts.require('CErc20Mock.sol')
 
   this.init = async () => {
@@ -35,8 +32,12 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
     return token
   }
 
-  this.balance = async () => {
-    return (await this.pool.methods['balance()'].call()).toString()
+  this.balance = async (funding) => {
+    return (await funding.methods['balance()'].call()).toString()
+  }
+
+  this.interestEarned = async (funding) => {
+    return (await funding.methods['interestEarned()'].call()).toString()
   }
 
   this.depositPool = async (amount, options) => {

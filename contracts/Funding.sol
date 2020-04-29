@@ -29,14 +29,12 @@ contract Funding is Ownable, ReentrancyGuard {
 
   /**
    * Emitted when a draw is rewarded.
-   * @param winner The address of the winner
-   * @param winnings The net winnings given to the winner
-   * @param fee The fee being given to the draw beneficiary
+   * @param receiver The address of the reward receiver
+   * @param amount The amount of the win
    */
   event Rewarded(
-    address indexed winner,
-    uint256 winnings,
-    uint256 fee
+    address indexed receiver,
+    uint256 amount
   );
 
   /**
@@ -60,7 +58,12 @@ contract Funding is Ownable, ReentrancyGuard {
   mapping (address => uint256) internal balances;
 
   modifier onlyOperator() {
-    require(msg.sender == operator, "is-admin");
+    require(msg.sender == operator, "Funding/is-opetator");
+    _;
+  }
+
+    modifier onlyOperatorOrOwner() {
+    require(msg.sender == operator || msg.sender == owner(), "Funding/is-opetator-or-owner");
     _;
   }
 
@@ -72,23 +75,6 @@ contract Funding is Ownable, ReentrancyGuard {
     Ownable.initialize(_owner);
     cToken = ICErc20(_cToken);
     operator = _operator;
-  }
-
-  /**
-   * @notice Returns the token underlying the cToken.
-   * @return An ERC20 token address
-   */
-  function token() public view returns (IERC20) {
-    return IERC20(cToken.underlying());
-  }
-
-  /**
-   * @notice Returns a user's total balance.  This includes their sponsorships, fees, open deposits, and committed deposits.
-   * @param _addr The address of the user to check.
-   * @return The user's current balance.
-   */
-  function balanceOf(address _addr) external view returns (uint256) {
-    return balances[_addr];
   }
 
   function deposit(uint256 _amount) public nonReentrant {
@@ -118,6 +104,7 @@ contract Funding is Ownable, ReentrancyGuard {
   * @param _amount The amount they are depositing
   */
   function _depositFrom(address _spender, uint256 _amount) internal {
+    require(_amount != 0, "Funding/deposit-zero");
     // Update the user's balance
     balances[_spender] = balances[_spender].add(_amount);
 
@@ -148,8 +135,67 @@ contract Funding is Ownable, ReentrancyGuard {
     require(token().transfer(_sender, _amount), "Funding/transfer");
   }
 
-  function reward() public onlyOperator {
+  function reward(address _receiver) public onlyOperator {
+    require(_receiver != address(0), "Funding/receiver-zero");
 
+    uint256 amount = interestEarned();
+    require(amount != 0, "Funding/reward-zero");
+
+    require(cToken.redeemUnderlying(amount) == 0, "Funding/redeem");
+    require(token().transfer(_receiver, amount), "Funding/transfer");
+
+    emit Rewarded(_receiver, amount);
+  }
+
+    /**
+   * @notice Returns the token underlying the cToken.
+   * @return An ERC20 token address
+   */
+  function token() public view returns (IERC20) {
+    return IERC20(cToken.underlying());
+  }
+
+  /**
+   * @notice Returns a user's total balance.  This includes their sponsorships, fees, open deposits, and committed deposits.
+   * @param _addr The address of the user to check.
+   * @return The user's current balance.
+   */
+  function balanceOf(address _addr) external view returns (uint256) {
+    return balances[_addr];
+  }
+
+  /**
+   * @notice Returns the underlying balance of this contract in the cToken.
+   * @return The cToken underlying balance for this contract.
+   */
+  function balance() public returns (uint256) {
+    return cToken.balanceOfUnderlying(address(this));
+  }
+
+    /**
+   * @notice Returns the interest earned by the contract till now
+   * @return The cToken underlying balance for this contract minus the deposited balance.
+   */
+  function interestEarned() public returns (uint256) {
+    return balance().sub(accountedBalance);
+  }
+
+
+    /**
+   * @notice Calculates the total estimated interest earned for the given number of blocks
+   * @param _blocks The number of block that interest accrued for
+   * @return The total estimated interest as a 18 point fixed decimal.
+   */
+  function estimatedInterestRate(uint256 _blocks) public view returns (uint256) {
+    return supplyRatePerBlock().mul(_blocks);
+  }
+
+  /**
+   * @notice Convenience function to return the supplyRatePerBlock value from the money market contract.
+   * @return The cToken supply rate per block
+   */
+  function supplyRatePerBlock() public view returns (uint256) {
+    return cToken.supplyRatePerBlock();
   }
 
 }
