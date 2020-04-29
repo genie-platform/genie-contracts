@@ -1,11 +1,7 @@
 const Funding = artifacts.require('Funding.sol')
 const FundingContext = require('./helpers/FundingContext')
 const truffleAssert = require('truffle-assertions')
-const chai = require('chai');
-const BN = require('bn.js');
-
-// Enable and inject BN dependency
-chai.use(require('chai-bn')(BN));
+const BN = require('bn.js')
 
 contract('Funding', accounts => {
   const owner = accounts[0]
@@ -31,117 +27,117 @@ contract('Funding', accounts => {
     user2BalanceBefore = await token.balanceOf(user2)
   })
 
-  // describe('#deposit', () => {
-  //   it('User can deposit funds', async () => {
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await funding.accountedBalance()).toString(), '0')
-  //     assert.equal(await fundingContext.balance(funding), '0')
+  describe('#deposit', () => {
+    it('User can deposit funds', async () => {
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await funding.accountedBalance()).toString(), '0')
+      assert.equal(await fundingContext.balance(funding), '0')
 
-  //     await funding.deposit(1, { from: user1 })
+      await funding.deposit(1, { from: user1 })
 
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '1')
-  //     assert.equal((await funding.accountedBalance()).toString(), '1')
-  //     assert.equal(await fundingContext.balance(funding), '1')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
-  //   })
+      assert.equal((await funding.balanceOf(user1)).toString(), '1')
+      assert.equal((await funding.accountedBalance()).toString(), '1')
+      assert.equal(await fundingContext.balance(funding), '1')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
+    })
 
-  //   it('User cannot deposit zero funds', async () => {
-  //     await truffleAssert.reverts(funding.deposit(0, { from: user1 }), 'Funding/deposit-zero')
-  //   })
+    it('User cannot deposit zero funds', async () => {
+      await truffleAssert.reverts(funding.deposit(0, { from: user1 }), 'Funding/deposit-zero')
+    })
 
-  //   it('User can deposit funds twice', async () => {
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await funding.accountedBalance()).toString(), '0')
-  //     assert.equal(await fundingContext.balance(funding), '0')
+    it('User can deposit funds twice', async () => {
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await funding.accountedBalance()).toString(), '0')
+      assert.equal(await fundingContext.balance(funding), '0')
 
-  //     await funding.deposit(1, { from: user1 })
+      await funding.deposit(1, { from: user1 })
 
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '1')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '1')
-  //     assert.equal(await fundingContext.balance(funding), '1')
+      assert.equal((await funding.balanceOf(user1)).toString(), '1')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '1')
+      assert.equal(await fundingContext.balance(funding), '1')
 
-  //     await funding.deposit(2, { from: user1 })
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '3')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('3')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '3')
-  //     assert.equal(await fundingContext.balance(funding), '3')
-  //   })
+      await funding.deposit(2, { from: user1 })
+      assert.equal((await funding.balanceOf(user1)).toString(), '3')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('3')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '3')
+      assert.equal(await fundingContext.balance(funding), '3')
+    })
 
-  //   it('multipe users can deposit funds', async () => {
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await funding.balanceOf(user2)).toString(), '0')
-  //     assert.equal((await funding.accountedBalance()).toString(), '0')
-  //     assert.equal(await fundingContext.balance(funding), '0')
+    it('multipe users can deposit funds', async () => {
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await funding.balanceOf(user2)).toString(), '0')
+      assert.equal((await funding.accountedBalance()).toString(), '0')
+      assert.equal(await fundingContext.balance(funding), '0')
 
-  //     await funding.deposit(1, { from: user1 })
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '1')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '1')
-  //     assert.equal(await fundingContext.balance(funding), '1')
+      await funding.deposit(1, { from: user1 })
+      assert.equal((await funding.balanceOf(user1)).toString(), '1')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.sub(new BN('1')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '1')
+      assert.equal(await fundingContext.balance(funding), '1')
 
-  //     await funding.deposit(2, { from: user2 })
-  //     assert.equal((await funding.balanceOf(user2)).toString(), '2')
-  //     assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.sub(new BN('2')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '3')
-  //     assert.equal(await fundingContext.balance(funding), '3')
-  //   })
-  // })
+      await funding.deposit(2, { from: user2 })
+      assert.equal((await funding.balanceOf(user2)).toString(), '2')
+      assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.sub(new BN('2')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '3')
+      assert.equal(await fundingContext.balance(funding), '3')
+    })
+  })
 
-  // describe('#withdraw', () => {
-  //   beforeEach(async () => {
-  //     await funding.deposit(5, { from: user1 })
-  //     await funding.deposit(10, { from: user2 })
+  describe('#withdraw', () => {
+    beforeEach(async () => {
+      await funding.deposit(5, { from: user1 })
+      await funding.deposit(10, { from: user2 })
 
-  //     user1BalanceBefore = await token.balanceOf(user1)
-  //     user2BalanceBefore = await token.balanceOf(user2)
-  //   })
+      user1BalanceBefore = await token.balanceOf(user1)
+      user2BalanceBefore = await token.balanceOf(user2)
+    })
 
-  //   it('User can withdraw his balance', async () => {
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '5')
-  //     assert.equal((await funding.accountedBalance()).toString(), '15')
+    it('User can withdraw his balance', async () => {
+      assert.equal((await funding.balanceOf(user1)).toString(), '5')
+      assert.equal((await funding.accountedBalance()).toString(), '15')
 
-  //     await funding.withdraw({ from: user1 })
+      await funding.withdraw({ from: user1 })
 
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '10')
-  //     assert.equal(await fundingContext.balance(funding), '10')
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '10')
+      assert.equal(await fundingContext.balance(funding), '10')
 
-  //     await funding.withdraw({ from: user1 })
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await funding.accountedBalance()).toString(), '10')
-  //     assert.equal(await fundingContext.balance(funding), '10')
-  //   })
+      await funding.withdraw({ from: user1 })
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await funding.accountedBalance()).toString(), '10')
+      assert.equal(await fundingContext.balance(funding), '10')
+    })
 
-  //   it('Multiple User can withdraw their balance', async () => {
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '5')
-  //     assert.equal((await funding.balanceOf(user2)).toString(), '10')
-  //     assert.equal((await funding.accountedBalance()).toString(), '15')
-  //     assert.equal(await fundingContext.balance(funding), '15')
+    it('Multiple User can withdraw their balance', async () => {
+      assert.equal((await funding.balanceOf(user1)).toString(), '5')
+      assert.equal((await funding.balanceOf(user2)).toString(), '10')
+      assert.equal((await funding.accountedBalance()).toString(), '15')
+      assert.equal(await fundingContext.balance(funding), '15')
 
-  //     await funding.withdraw({ from: user1 })
+      await funding.withdraw({ from: user1 })
 
-  //     assert.equal((await funding.balanceOf(user1)).toString(), '0')
-  //     assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '10')
-  //     assert.equal(await fundingContext.balance(funding), '10')
+      assert.equal((await funding.balanceOf(user1)).toString(), '0')
+      assert.equal((await token.balanceOf(user1)).toString(), user1BalanceBefore.add(new BN('5')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '10')
+      assert.equal(await fundingContext.balance(funding), '10')
 
-  //     await funding.withdraw({ from: user2 })
+      await funding.withdraw({ from: user2 })
 
-  //     assert.equal((await funding.balanceOf(user2)).toString(), '0')
-  //     assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.add(new BN('10')).toString())
-  //     assert.equal((await funding.accountedBalance()).toString(), '0')
-  //     assert.equal(await fundingContext.balance(funding), '0')
-  //   })
+      assert.equal((await funding.balanceOf(user2)).toString(), '0')
+      assert.equal((await token.balanceOf(user2)).toString(), user2BalanceBefore.add(new BN('10')).toString())
+      assert.equal((await funding.accountedBalance()).toString(), '0')
+      assert.equal(await fundingContext.balance(funding), '0')
+    })
 
-  //   it('User can withdraw zero balance', async () => {
-  //     assert.equal((await funding.balanceOf(user3)).toString(), '0')
-  //     await funding.withdraw({ from: user3 })
+    it('User can withdraw zero balance', async () => {
+      assert.equal((await funding.balanceOf(user3)).toString(), '0')
+      await funding.withdraw({ from: user3 })
 
-  //     assert.equal((await funding.balanceOf(user3)).toString(), '0')
-  //   })
-  // })
+      assert.equal((await funding.balanceOf(user3)).toString(), '0')
+    })
+  })
 
   describe('interest', () => {
     describe('#interestEarned', () => {

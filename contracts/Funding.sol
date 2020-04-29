@@ -135,7 +135,7 @@ contract Funding is Ownable, ReentrancyGuard {
     require(token().transfer(_sender, _amount), "Funding/transfer");
   }
 
-  function reward(address _receiver) public onlyOperator {
+  function reward(address _receiver) public onlyOperatorOrOwner {
     require(_receiver != address(0), "Funding/receiver-zero");
 
     uint256 amount = interestEarned();
