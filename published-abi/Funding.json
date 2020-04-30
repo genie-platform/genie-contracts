@@ -12109,7 +12109,7 @@
   },
   "networks": {},
   "schemaVersion": "3.1.0",
-  "updatedAt": "2020-04-29T17:31:12.968Z",
+  "updatedAt": "2020-04-30T06:44:39.037Z",
   "devdoc": {
     "methods": {
       "balance()": {
