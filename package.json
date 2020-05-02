@@ -8,6 +8,7 @@
     "build": "truffle compile",
     "compile": "truffle compile",
     "deploy-dev": "truffle migrate --network development",
+    "deploy-kovan": "truffle migrate --network kovan",
     "deploy-ropsten": "truffle migrate --network ropsten",
     "deploy-fuse": "truffle migrate --network fuse",
     "deploy-mainnet": "truffle migrate --network mainnet"
@@ -35,7 +36,8 @@
     "@openzeppelin/contracts-ethereum-package": "^2.5.0",
     "@openzeppelin/upgrades": "^2.8.0",
     "openzeppelin-solidity": "^3.0.0",
-    "truffle": "^5.1.23"
+    "truffle": "^5.1.23",
+    "truffle-hdwallet-provider": "^1.0.17"
   },
   "devDependencies": {
     "eslint-plugin-truffle": "^0.3.1",

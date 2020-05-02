@@ -1,0 +1,24 @@
+{
+  "manifestVersion": "2.2",
+  "contracts": {
+    "FundingFactory": "FundingFactory"
+  },
+  "dependencies": {},
+  "name": "genie-contracts",
+  "version": "0.2.0",
+  "compiler": {
+    "compilerSettings": {
+      "optimizer": {
+        "enabled": false,
+        "runs": "200"
+      }
+    },
+    "typechain": {
+      "enabled": false
+    },
+    "manager": "truffle",
+    "artifactsDir": "build/contracts",
+    "contractsDir": "contracts"
+  },
+  "telemetryOptIn": true
+}
