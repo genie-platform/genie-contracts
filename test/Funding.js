@@ -21,10 +21,11 @@ contract('Funding', accounts => {
     token = fundingContext.token
     moneyMarket = fundingContext.moneyMarket
     compoundLending = fundingContext.compoundLending
+    console.log(token.address)
     console.log({ compoundLending })
     funding = await Funding.new(owner, compoundLending.address, operator)
-    await token.approve(funding.address, 100, { from: user1 })
-    await token.approve(funding.address, 100, { from: user2 })
+    await token.approve(compoundLending.address, 100, { from: user1 })
+    await token.approve(compoundLending.address, 100, { from: user2 })
     user1BalanceBefore = await token.balanceOf(user1)
     user2BalanceBefore = await token.balanceOf(user2)
   })

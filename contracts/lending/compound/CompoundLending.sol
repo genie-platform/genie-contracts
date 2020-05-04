@@ -36,8 +36,8 @@ contract CompoundLending is ILending {
   }
 
   function underlyingToken() external view returns (IERC20){
-    // return IERC20(cToken.underlying());
-    return token;
+    return IERC20(cToken.underlying());
+    // return token;
   }
 
 

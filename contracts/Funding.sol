@@ -38,6 +38,8 @@ contract Funding is Ownable, ReentrancyGuard {
     uint256 amount
   );
 
+  event Debug(address);
+
   /**
    * Contract's operator
    */
@@ -81,10 +83,12 @@ contract Funding is Ownable, ReentrancyGuard {
 
   function deposit(uint256 _amount) public nonReentrant {
     // Transfer the tokens into this contract
-    require(token().transferFrom(msg.sender, address(this), _amount), "Funding/t-fail");
+    emit Debug(address(token()));
+    emit Debug(address(iLending))
+    require(token().transferFrom(msg.sender, address(iLending), _amount), "Funding/t-fail");
 
     // Deposit the funds
-    _depositFrom(msg.sender, _amount);
+    // _depositFrom(msg.sender, _amount);
 
     emit Deposited(msg.sender, _amount);
     // _depositPoolFrom(msg.sender, _amount);
