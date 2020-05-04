@@ -13,10 +13,12 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
 
   const Token = artifacts.require('Token.sol')
   const CErc20Mock = artifacts.require('CErc20Mock.sol')
+  const CompoundLending = artifacts.require('CompoundLending.sol')
 
   this.init = async () => {
     this.token = await this.newToken()
     this.moneyMarket = await CErc20Mock.new({ from: admin })
+    this.compoundLending = await CompoundLending.new(this.moneyMarket.address)
     await this.moneyMarket.initialize(this.token.address, new BN(SUPPLY_RATE_PER_BLOCK))
     await this.token.mint(this.moneyMarket.address, new BN(MAX_NEW_FIXED).add(new BN(web3.utils.toWei('10000000', 'ether'))).toString())
     await this.token.mint(admin, web3.utils.toWei('100000', 'ether'))

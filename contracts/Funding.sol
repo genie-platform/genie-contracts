@@ -6,7 +6,8 @@ import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import '@openzeppelin/upgrades/contracts/Initializable.sol';
 
-import "./compound/ICErc20.sol";
+import "./lending/compound/ICErc20.sol";
+import "./lending/ILending.sol";
 
 contract Funding is Ownable, ReentrancyGuard {
 
@@ -48,9 +49,9 @@ contract Funding is Ownable, ReentrancyGuard {
   uint256 public accountedBalance;
 
   /**
-   * The Compound cToken that this Pool is bound to.
+   * Lending interface that this Pool is bound to.
    */
-  ICErc20 public cToken;
+  ILending public iLending;
 
   /**
    * The total deposits for each user.
@@ -67,13 +68,14 @@ contract Funding is Ownable, ReentrancyGuard {
     _;
   }
 
-  constructor(address _owner, address _cToken, address _operator) public {
+  constructor(address _owner, ILending _iLending, address _operator) public {
     require(_owner != address(0), "Funding/owner-zero");
-    require(_cToken != address(0), "Funding/ctoken-zero");
+    require(address(_iLending) != address(0), "Funding/lending-zero");
     require(_operator != address(0), "Funding/operator-zero");
 
     Ownable.initialize(_owner);
-    cToken = ICErc20(_cToken);
+    iLending = _iLending;
+    // cToken = ICErc20(_cToken);
     operator = _operator;
   }
 
@@ -112,8 +114,9 @@ contract Funding is Ownable, ReentrancyGuard {
     accountedBalance = accountedBalance.add(_amount);
 
     // Deposit into Compound
-    require(token().approve(address(cToken), _amount), "Funding/approve");
-    require(cToken.mint(_amount) == 0, "Funding/supply");
+    iLending.deposit(_amount);
+    // require(token().approve(address(cToken), _amount), "Funding/approve");
+    // require(cToken.mint(_amount) == 0, "Funding/supply");
   }
 
     /**
@@ -131,8 +134,9 @@ contract Funding is Ownable, ReentrancyGuard {
     accountedBalance = accountedBalance.sub(_amount);
 
     // Withdraw from Compound and transfer
-    require(cToken.redeemUnderlying(_amount) == 0, "Funding/redeem");
-    require(token().transfer(_sender, _amount), "Funding/transfer");
+    iLending.withdraw(_sender, _amount);
+    // require(cToken.redeemUnderlying(_amount) == 0, "Funding/redeem");
+    // require(token().transfer(_sender, _amount), "Funding/transfer");
   }
 
   function reward(address _receiver) public onlyOperatorOrOwner {
@@ -141,8 +145,9 @@ contract Funding is Ownable, ReentrancyGuard {
     uint256 amount = interestEarned();
     require(amount != 0, "Funding/reward-zero");
 
-    require(cToken.redeemUnderlying(amount) == 0, "Funding/redeem");
-    require(token().transfer(_receiver, amount), "Funding/transfer");
+    // require(cToken.redeemUnderlying(amount) == 0, "Funding/redeem");
+    // require(token().transfer(_receiver, amount), "Funding/transfer");
+    iLending.withdraw(_receiver, amount);
 
     emit Rewarded(_receiver, amount);
   }
@@ -152,7 +157,8 @@ contract Funding is Ownable, ReentrancyGuard {
    * @return An ERC20 token address
    */
   function token() public view returns (IERC20) {
-    return IERC20(cToken.underlying());
+    return iLending.underlyingToken();
+    // return IERC20(cToken.underlying());
   }
 
   /**
@@ -169,7 +175,9 @@ contract Funding is Ownable, ReentrancyGuard {
    * @return The cToken underlying balance for this contract.
    */
   function balance() public returns (uint256) {
-    return cToken.balanceOfUnderlying(address(this));
+    // return cToken.balanceOfUnderlying(address(this));
+    // return 0;
+    return iLending.balanceOfUnderlying(address(this));
   }
 
     /**
@@ -186,16 +194,16 @@ contract Funding is Ownable, ReentrancyGuard {
    * @param _blocks The number of block that interest accrued for
    * @return The total estimated interest as a 18 point fixed decimal.
    */
-  function estimatedInterestRate(uint256 _blocks) public view returns (uint256) {
-    return supplyRatePerBlock().mul(_blocks);
-  }
+  // function estimatedInterestRate(uint256 _blocks) public view returns (uint256) {
+  //   return supplyRatePerBlock().mul(_blocks);
+  // }
 
   /**
    * @notice Convenience function to return the supplyRatePerBlock value from the money market contract.
    * @return The cToken supply rate per block
    */
-  function supplyRatePerBlock() public view returns (uint256) {
-    return cToken.supplyRatePerBlock();
-  }
+  // function supplyRatePerBlock() public view returns (uint256) {
+  //   return cToken.supplyRatePerBlock();
+  // }
 
 }
