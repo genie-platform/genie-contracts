@@ -21,10 +21,6 @@ contract CErc20Mock is Initializable, ICErc20 {
     return 0;
   }
 
-  function getCash() external view returns (uint) {
-    return IERC20(underlying).balanceOf(address(this));
-  }
-
   function redeemUnderlying(uint256 requestedAmount) external returns (uint) {
     require(requestedAmount <= ownerTokenAmounts[msg.sender], "insufficient underlying funds");
     ownerTokenAmounts[msg.sender] = ownerTokenAmounts[msg.sender] - requestedAmount;
