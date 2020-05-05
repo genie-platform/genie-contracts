@@ -1,4 +1,4 @@
-const Funding = artifacts.require('Funding.sol')
+const CompoundFunding = artifacts.require('CompoundFunding.sol')
 const FundingContext = require('./helpers/FundingContext')
 const truffleAssert = require('truffle-assertions')
 const BN = require('bn.js')
@@ -20,7 +20,7 @@ contract('Funding', accounts => {
     await fundingContext.init()
     token = fundingContext.token
     moneyMarket = fundingContext.moneyMarket
-    funding = await Funding.new(owner, moneyMarket.address, operator)
+    funding = await CompoundFunding.new(owner, moneyMarket.address, operator)
     await token.approve(funding.address, 100, { from: user1 })
     await token.approve(funding.address, 100, { from: user2 })
     user1BalanceBefore = await token.balanceOf(user1)

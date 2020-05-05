@@ -1,5 +1,5 @@
 const FundingFactory = artifacts.require('FundingFactory.sol')
-const Funding = artifacts.require('Funding.sol')
+const BaseFunding = artifacts.require('BaseFunding.sol')
 const FundingContext = require('./helpers/FundingContext')
 const truffleAssert = require('truffle-assertions')
 
@@ -10,7 +10,7 @@ const createFunding = async (factory, args) => {
     fundingAddress = ev.funding
     return true
   })
-  const funding = await Funding.at(fundingAddress)
+  const funding = await BaseFunding.at(fundingAddress)
   return { funding, result }
 }
 
@@ -30,7 +30,7 @@ contract('FundingFactory', accounts => {
 
   describe('#createFunding', () => {
     it('User can create funding', async () => {
-      const { funding } = await createFunding(factory, [moneyMarket.address, operator])
+      const { funding } = await createFunding(factory, [moneyMarket.address, 0, operator])
       assert.equal(await funding.operator(), operator, 'operator initialized')
       assert.equal(await funding.owner(), owner, 'owner initialized')
     })
