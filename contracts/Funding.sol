@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 import "./BaseFunding.sol";
 
-contract Funding is BaseFunding {
+contract CompoundFunding is BaseFunding {
 
   /**
    * The Compound cToken that this Pool is bound to.
