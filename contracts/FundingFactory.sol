@@ -11,7 +11,9 @@ contract FundingFactory is Initializable {
 
   enum LendingProtocol { COMPOUND, AAVE }
 
-  function initialize() public initializer {
+  address lendingPoolAddressesProvider;
+  function initialize(address _lendingPoolAddressesProvider) public initializer {
+    lendingPoolAddressesProvider = _lendingPoolAddressesProvider;
   }
 
   function createFunding(address _interestToken, uint _lendingProtocol, address _operator) public  returns (address fundingAddress) {
