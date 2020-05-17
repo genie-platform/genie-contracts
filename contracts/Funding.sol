@@ -5,10 +5,11 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import '@openzeppelin/upgrades/contracts/Initializable.sol';
+import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
 
 import "./compound/ICErc20.sol";
 
-contract Funding is Ownable, ReentrancyGuard {
+contract Funding is Ownable, ReentrancyGuard, ChainlinkClient {
 
   using SafeMath for uint256;
 
@@ -73,6 +74,7 @@ contract Funding is Ownable, ReentrancyGuard {
     require(_operator != address(0), "Funding/operator-zero");
 
     Ownable.initialize(_owner);
+    setPublicChainlinkToken();
     cToken = ICErc20(_cToken);
     operator = _operator;
   }
