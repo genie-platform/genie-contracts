@@ -16,14 +16,12 @@ contract('Funding', accounts => {
   const fundingContext = new FundingContext({ web3, artifacts, accounts })
 
   beforeEach(async () => {
-    // factory = await FundingFactory.new(operator)
     await fundingContext.init()
     token = fundingContext.token
     moneyMarket = fundingContext.moneyMarket
     linkToken = fundingContext.linkToken
     factory = await fundingContext.createFactory(linkToken)
 
-    // funding = await Funding.new(owner, moneyMarket.address, operator)
     const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
     funding = response.funding
     await token.approve(funding.address, 100, { from: user1 })

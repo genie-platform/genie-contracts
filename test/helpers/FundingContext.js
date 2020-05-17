@@ -72,28 +72,4 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
       await this.pool.depositPool(amount)
     }
   }
-
-  // this.createPool = async (feeFraction = new BN('0'), cooldownDuration = 1) => {
-  //   this.pool = await this.createPoolNoOpenDraw(feeFraction, cooldownDuration)
-  //   await this.openNextDraw()
-  //   return this.pool
-  // }
-
-  // this.createToken = async () => {
-  //   this.poolToken = await PoolToken.new()
-  //   await this.poolToken.init(
-  //     'Prize Dai', 'pzDAI', [], this.pool.address
-  //   )
-
-  //   assert.equal(await this.poolToken.pool(), this.pool.address)
-
-  //   await this.pool.setPoolToken(this.poolToken.address)
-
-  //   return this.poolToken
-  // }
-
-  // this.newPool = async () => {
-  //   return MCDAwarePool.new()
-  // }
-
 }
