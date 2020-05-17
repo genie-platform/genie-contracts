@@ -34,6 +34,7 @@
   "homepage": "https://github.com/genie-platform/genie-contracts#readme",
   "dependencies": {
     "@chainlink/contracts": "^0.0.3",
+    "@chainlink/test-helpers": "^0.0.2",
     "@openzeppelin/contracts-ethereum-package": "^2.5.0",
     "@openzeppelin/upgrades": "^2.8.0",
     "openzeppelin-solidity": "^3.0.0",

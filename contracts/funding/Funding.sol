@@ -2,16 +2,17 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
-// import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import '@openzeppelin/upgrades/contracts/Initializable.sol';
-import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
+// import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
 
-import "./compound/ICErc20.sol";
+import "./FundingOracle.sol";
+import "../compound/ICErc20.sol";
 
-contract Funding is Ownable, ReentrancyGuard, ChainlinkClient {
+contract Funding is Ownable, ReentrancyGuard {
 
-  // using SafeMath for uint256;
+  using SafeMath for uint256;
 
 
   /**
@@ -58,6 +59,12 @@ contract Funding is Ownable, ReentrancyGuard, ChainlinkClient {
    */
   mapping (address => uint256) internal balances;
 
+
+  /**
+   * Oracle
+   */
+  FundingOracle public oracle;
+
   modifier onlyOperator() {
     require(msg.sender == operator, "Funding/is-opetator");
     _;
@@ -68,15 +75,15 @@ contract Funding is Ownable, ReentrancyGuard, ChainlinkClient {
     _;
   }
 
-  constructor(address _owner, address _cToken, address _operator) public {
+  constructor(address _owner, address _cToken, address _operator, address _oracle) public {
     require(_owner != address(0), "Funding/owner-zero");
     require(_cToken != address(0), "Funding/ctoken-zero");
     require(_operator != address(0), "Funding/operator-zero");
 
     Ownable.initialize(_owner);
-    setPublicChainlinkToken();
     cToken = ICErc20(_cToken);
     operator = _operator;
+    oracle = FundingOracle(_oracle);
   }
 
   function deposit(uint256 _amount) public nonReentrant {
