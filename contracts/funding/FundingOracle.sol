@@ -20,11 +20,11 @@ contract FundingOracle is ChainlinkClient, Ownable {
    * @param _link The address of the LINK token contract
    */
   constructor(address _link) public {
-    // if (_link == address(0)) {
-    //   setPublicChainlinkToken();
-    // } else {
-    //   setChainlinkToken(_link);
-    // }
+    if (_link == address(0)) {
+      setPublicChainlinkToken();
+    } else {
+      setChainlinkToken(_link);
+    }
   }
 
   /**
