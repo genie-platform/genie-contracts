@@ -13,7 +13,6 @@ module.exports = function (deployer, network, [defaultAccount]) {
         .deploy(Oracle, link.address, { from: defaultAccount })
         .then(async () => {
           const factory = await deployer.deploy(FundingFactory)
-          console.log(link.address)
           await factory.initialize(link.address)
         })
     })

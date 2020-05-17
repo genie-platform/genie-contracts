@@ -94,7 +94,6 @@ contract Funding is Ownable, ReentrancyGuard {
     _depositFrom(msg.sender, _amount);
 
     emit Deposited(msg.sender, _amount);
-    // _depositPoolFrom(msg.sender, _amount);
   }
 
   /**
