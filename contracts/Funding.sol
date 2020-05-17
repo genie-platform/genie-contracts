@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
+// import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import '@openzeppelin/upgrades/contracts/Initializable.sol';
 import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
@@ -11,7 +11,7 @@ import "./compound/ICErc20.sol";
 
 contract Funding is Ownable, ReentrancyGuard, ChainlinkClient {
 
-  using SafeMath for uint256;
+  // using SafeMath for uint256;
 
 
   /**
