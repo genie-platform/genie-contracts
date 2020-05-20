@@ -65,7 +65,7 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
     req.add("url", url);
     req.add("copyPath", path);
     req.addInt("level", level);
-    req.addBytes("pool", abi.encodePacked( _pool));
+    req.addBytes("pool", abi.encodePacked(_pool));
     requestId = sendChainlinkRequestTo(_oracle, req, _payment);
   }
 

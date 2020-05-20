@@ -11,6 +11,8 @@ contract('Funding', accounts => {
   const user1 = accounts[2]
   const user2 = accounts[3]
   const user3 = accounts[4]
+  // console.log(owner)
+  // console.log(web3.eth.abi.encodeParameter('bytes32', owner))
 
   // const userId1 = web3.utils.fromAscii('coolUser')
   // const userId2 = web3.utils.fromAscii('neatUser')
