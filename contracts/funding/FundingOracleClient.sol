@@ -10,17 +10,12 @@ import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
  * @dev This contract is designed to work on multiple networks, including
  * local test networks
  */
-contract FundingOracle is ChainlinkClient, Ownable {
-  uint256 public data;
+contract FundingOracleClient is ChainlinkClient, Ownable {
+  bytes32 public data;
+  // string public league;
+  uint8 public level;
   string public url;
   string public path;
-
-  // address _oracle,
-  // bytes32 _jobId,
-  // uint256 _payment,
-  // string public url,
-  // string public path,
-  // int256 _times
 
   /**
    * @notice Deploy the contract with a specified address for the LINK
@@ -28,13 +23,17 @@ contract FundingOracle is ChainlinkClient, Ownable {
    * @dev Sets the storage for the specified addresses
    * @param _link The address of the LINK token contract
    */
-  constructor(address _link) public {
+  constructor(string memory _url, string memory _path, uint8 _level, address _link) public {
     if (_link == address(0)) {
       setPublicChainlinkToken();
     } else {
       setChainlinkToken(_link);
     }
 
+    url = _url;
+    path = _path;
+    // league = _league;
+    level = _level;
     Ownable.initialize(msg.sender);
   }
 
@@ -55,6 +54,7 @@ contract FundingOracle is ChainlinkClient, Ownable {
    * @param _jobId The bytes32 JobID to be executed
    */
   function requestWinner(
+    address _pool,
     address _oracle,
     bytes32 _jobId,
     uint256 _payment
@@ -65,7 +65,9 @@ contract FundingOracle is ChainlinkClient, Ownable {
   {
     Chainlink.Request memory req = buildChainlinkRequest(_jobId, address(this), this.fulfill.selector);
     req.add("url", url);
-    req.add("path", path);
+    req.add("copyPath", path);
+    req.addInt("level", level);
+    req.addBytes("pool", abi.encodePacked( _pool));
     requestId = sendChainlinkRequestTo(_oracle, req, _payment);
   }
 
@@ -76,7 +78,7 @@ contract FundingOracle is ChainlinkClient, Ownable {
    * @param _requestId The ID that was generated for the request
    * @param _data The answer provided by the oracle
    */
-  function fulfill(bytes32 _requestId, uint256 _data)
+  function fulfill(bytes32 _requestId, bytes32 _data)
     public
     recordChainlinkFulfillment(_requestId)
   {

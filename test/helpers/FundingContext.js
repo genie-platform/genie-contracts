@@ -44,8 +44,19 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
     return factory
   }
 
-  this.createFunding = async (factory, args) => {
-    const result = await factory.createFunding(...args)
+  this.createFunding = async (factory, rest) => {
+    let args
+    if (rest.length < 4) {
+      args = [...rest, '', '', 100, 0]
+    } else if (rest.length < 5) {
+      args = [...rest, 100, 0]
+    } else if (rest.length < 5) {
+      args = [...rest, 0]
+    } else {
+      args = rest
+    }
+    // const args = rest.length < 4 ? [...rest, '', '', 100, 0] : rest.length < 5 ? [...rest, 100, 0] : rest
+    const result = await factory.createFundingWithOracle(...args)
     let fundingAddress
     truffleAssert.eventEmitted(result, 'FundingCreated', (ev) => {
       fundingAddress = ev.funding
