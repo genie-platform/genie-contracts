@@ -12,7 +12,6 @@ import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
  */
 contract FundingOracleClient is ChainlinkClient, Ownable {
   bytes32 public data;
-  // string public league;
   uint8 public level;
   string public url;
   string public path;
@@ -32,7 +31,6 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
 
     url = _url;
     path = _path;
-    // league = _league;
     level = _level;
     Ownable.initialize(msg.sender);
   }
