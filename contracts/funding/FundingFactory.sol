@@ -18,8 +18,8 @@ contract FundingFactory is Initializable {
   }
 
   function createFunding(address _cToken, address _operator,
-      string memory _oracleUrl, string memory _oraclePath, uint8 _level, uint256 ticketPrice) public  returns (address fundingAddress) {
-    FundingOracleClient oracle = new FundingOracleClient(_oracleUrl, _oraclePath, _level, link);
+      address _oracle, bytes32 _jobId, uint8 _level, uint256 ticketPrice) public  returns (address fundingAddress) {
+    FundingOracleClient oracle = new FundingOracleClient(_oracle, _jobId, _level, link);
     Funding funding = new Funding(msg.sender, _cToken, _operator, address(oracle), ticketPrice);
 
     fundingAddress = address(funding);

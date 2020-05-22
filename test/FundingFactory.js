@@ -2,10 +2,6 @@ const FundingContext = require('./helpers/FundingContext')
 const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
 const { ZERO_ADDRESS } = require('./helpers/constants')
 
-const url =
-'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,JPY'
-const path = 'USD'
-
 contract('FundingFactory', accounts => {
   const owner = accounts[0]
   const operator = accounts[1]
@@ -47,16 +43,16 @@ contract('FundingFactory', accounts => {
       assert.equal(await oracle.owner(), funding.address, 'oracle owner initialized')
     })
 
-    it('oracle url and path should be correct', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, url, path])
+    it('oracle address and jobId should be correct', async () => {
+      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
       const oracle = await FundingOracleClient.at(await funding.oracle())
-      assert.equal(await oracle.getChainlinkToken(), linkToken.address, 'url is not correct')
-      assert.equal(await oracle.url(), url, 'url is not correct')
-      assert.equal(await oracle.path(), path, 'path is not correct')
+      assert.equal(await oracle.getChainlinkToken(), linkToken.address, 'token is not correct')
+      assert.equal(await oracle.oracle(), fundingContext.oracle.address, 'oracle is not correct')
+      assert.equal(await oracle.jobId(), fundingContext.jobId, 'jobId is not correct')
     })
 
     it('ticket price should be correct', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, url, path, 100, 10])
+      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
       assert.equal(await funding.ticketPrice(), 10, 'ticket price initialized')
     })
   })

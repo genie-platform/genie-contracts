@@ -136,12 +136,12 @@ contract Funding is Ownable, ReentrancyGuard {
         emit Withdrawn(msg.sender, balance);
     }
 
-    function requestWinner(address _oracle, bytes32 _jobId, uint256 _payment)
+    function requestWinner(uint256 _payment)
         public
         open
         onlyOperatorOrOwner returns (bytes32 requestId)
     {
-        requestId = oracle.requestWinner(address(this), _oracle, _jobId, _payment);
+        requestId = oracle.requestWinner(address(this), _payment);
     }
 
     function rewardWinner() public open {

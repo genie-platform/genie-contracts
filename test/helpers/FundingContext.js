@@ -5,6 +5,9 @@ const {
   MAX_NEW_FIXED
 } = require('./constants')
 
+const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')
+const level = 90
+
 module.exports = function PoolContext({ web3, artifacts, accounts }) {
 
   const [owner, admin, user1, user2, user3] = accounts
@@ -19,6 +22,8 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
   const { Oracle } = require('@chainlink/contracts/truffle/v0.5/Oracle')
 
   this.init = async () => {
+    this.jobId = jobId
+    this.level = level
     this.token = await this.newToken()
     this.moneyMarket = await CErc20Mock.new({ from: admin })
     await this.moneyMarket.initialize(this.token.address, new BN(SUPPLY_RATE_PER_BLOCK))
@@ -47,7 +52,7 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
   this.createFunding = async (factory, rest) => {
     let args
     if (rest.length < 4) {
-      args = [...rest, '', '', 100, 0]
+      args = [...rest, this.oracle.address, jobId, 100, 0]
     } else if (rest.length < 5) {
       args = [...rest, 100, 0]
     } else if (rest.length < 5) {

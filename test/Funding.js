@@ -65,7 +65,7 @@ contract('Funding', accounts => {
     context('with ticket price', () => {
       const ticketPrice = 5
       beforeEach(async () => {
-        const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, '', '', 10, ticketPrice])
+        const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 10, ticketPrice])
         funding = response.funding
         await token.approve(funding.address, 100, { from: user1 })
       })
@@ -254,7 +254,7 @@ contract('Funding', accounts => {
 
     let oracleClient, linkToken, oc, request
     beforeEach(async () => {
-      const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, 'https://myurl.com', 'winnerAccount', 100, 10])
+      const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
       funding = response.funding
       oracleClient = await funding.oracle()
       linkToken = fundingContext.linkToken
@@ -278,7 +278,7 @@ contract('Funding', accounts => {
 
     describe('#requestWinner', () => {
       it('triggers a log event in the new Oracle contract', async () => {
-        const tx = await funding.requestWinner(oc.address, jobId, payment, { from: owner })
+        const tx = await funding.requestWinner(payment, { from: owner })
 
         request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
         assert.equal(oc.address, tx.receipt.rawLogs[3].address)

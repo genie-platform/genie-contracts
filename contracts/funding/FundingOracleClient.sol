@@ -13,24 +13,27 @@ import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
 contract FundingOracleClient is ChainlinkClient, Ownable {
   bytes32 public data;
   uint8 public level;
-  string public url;
-  string public path;
+  address public oracle;
+  bytes32 public jobId;
 
   /**
    * @notice Deploy the contract with a specified address for the LINK
    * and Oracle contract addresses
    * @dev Sets the storage for the specified addresses
+   * @param _oracle The address of the oracle contract
+   * @param _jobId The job id of the adapter
+   * @param _level The poe level
    * @param _link The address of the LINK token contract
    */
-  constructor(string memory _url, string memory _path, uint8 _level, address _link) public {
+  constructor(address _oracle, bytes32 _jobId, uint8 _level, address _link) public {
     if (_link == address(0)) {
       setPublicChainlinkToken();
     } else {
       setChainlinkToken(_link);
     }
 
-    url = _url;
-    path = _path;
+    oracle = _oracle;
+    jobId = _jobId;
     level = _level;
     Ownable.initialize(msg.sender);
   }
@@ -48,25 +51,19 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
    * @notice Creates a request to the specified Oracle contract address
    * @dev This function ignores the stored Oracle contract address and
    * will instead send the request to the address specified
-   * @param _oracle The Oracle contract address to send the request to
-   * @param _jobId The bytes32 JobID to be executed
    */
   function requestWinner(
     address _pool,
-    address _oracle,
-    bytes32 _jobId,
     uint256 _payment
   )
     public
     onlyOwner
     returns (bytes32 requestId)
   {
-    Chainlink.Request memory req = buildChainlinkRequest(_jobId, address(this), this.fulfill.selector);
-    req.add("url", url);
-    req.add("copyPath", path);
+    Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
     req.addInt("level", level);
     req.addBytes("pool", abi.encodePacked(_pool));
-    requestId = sendChainlinkRequestTo(_oracle, req, _payment);
+    requestId = sendChainlinkRequestTo(oracle, req, _payment);
   }
 
   /**
