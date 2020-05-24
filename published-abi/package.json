@@ -1,6 +1,6 @@
 {
   "name": "genie-contracts-abi",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "ABI for smart contracts of the Genie",
   "main": "index.js",
   "repository": {
