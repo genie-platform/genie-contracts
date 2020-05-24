@@ -16,7 +16,7 @@ contract('Funding', accounts => {
 
   // const userId1 = web3.utils.fromAscii('coolUser')
   // const userId2 = web3.utils.fromAscii('neatUser')
-
+  console.log({ppp: web3.utils.toHex('eLeIR8D+fl0Jhfb9OMubJhsJOcY=') })
   const userId1 = 'coolUser'
   const userId2 = 'neatUser'
 
