@@ -62,16 +62,14 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
   {
     Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
     req.addInt("level", level);
-    req.add("pool", turnString(_pool));
+    // passing pool address as int
+    req.addUint("pool", uint256(_pool));
     requestId = sendChainlinkRequestTo(oracle, req, _payment);
   }
 
-  function turnString(address x) public view returns (string memory) {
-      bytes memory b = new bytes(20);
-      for (uint i = 0; i < 20; i++)
-          b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
-      return string(b);
-  }
+  // function turnInt(address x) public view returns (uint) {
+  //   return uint256(x);
+  // }
 
   /**
    * @notice The fulfill method from requests created by this contract

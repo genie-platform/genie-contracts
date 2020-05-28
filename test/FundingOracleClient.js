@@ -34,94 +34,103 @@ contract('FundingOracleClient', accounts => {
     })
   })
 
-  // it('constructor params are correct', async () => {
-  //   assert.equal(
-  //     await oracleClient.getChainlinkToken(),
-  //     linkToken.address,
-  //     'link is not correct'
-  //   )
-  //   assert.equal(await oracleClient.oracle(), oc.address, 'oracle is not correct')
-  //   assert.equal(await oracleClient.jobId(), jobId, 'jobId is not correct')
-  // })
-
-  // it('FundingOracleClient owner is the oracle creator', async () => {
-  //   assert.equal(await oracleClient.owner(), owner)
-  // })
-
-  it('toString', async () => {
-    console.log(await oracleClient.turnString(owner))
-    console.log(web3.utils.asciiToHex(await oracleClient.turnString(owner)))
-    assert.equal(web3.utils.asciiToHex(await oracleClient.turnString(owner)), owner)
+  it('constructor params are correct', async () => {
+    assert.equal(
+      await oracleClient.getChainlinkToken(),
+      linkToken.address,
+      'link is not correct'
+    )
+    assert.equal(await oracleClient.oracle(), oc.address, 'oracle is not correct')
+    assert.equal(await oracleClient.jobId(), jobId, 'jobId is not correct')
   })
 
-  // describe('#requestWinner', async () => {
-  //   context('without LINK', () => {
-  //     it('reverts', async () => {
-  //       await expectRevert.unspecified(
-  //         oracleClient.requestWinner(poolAddress, payment)
-  //       )
-  //     })
-  //   })
+  it('FundingOracleClient owner is the oracle creator', async () => {
+    assert.equal(await oracleClient.owner(), owner)
+  })
 
-  //   context('with LINK', () => {
-  //     beforeEach(async () => {
-  //       await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
-  //         from: admin
-  //       })
-  //     })
-
-  //     it('triggers a log event in the new Oracle contract', async () => {
-  //       const tx = await oracleClient.requestWinner(poolAddress, payment)
-
-  //       request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
-  //       assert.equal(oc.address, tx.receipt.rawLogs[3].address)
-  //       assert.equal(
-  //         request.topic,
-  //         web3.utils.keccak256(
-  //           'OracleRequest(bytes32,address,bytes32,uint256,address,bytes4,uint256,uint256,bytes)',
-  //         )
-  //       )
-  //     })
-  //   })
+  // it('toString', async () => {
+  //   console.log(await oracleClient.turnString(owner))
+  //   console.log(web3.utils.asciiToHex(await oracleClient.turnString(owner)))
+  //   assert.equal(web3.utils.asciiToHex(await oracleClient.turnString(owner)), owner)
   // })
 
-  // describe('#fulfill', async () => {
-  //   // const response = web3.utils.padRight(web3.utils.toHex(expected), 64)
-  //   // const response = web3.utils.padLeft(web3.utils.toHex(winner), 12)
-  //   const response = web3.utils.padLeft(winner, 64).toLowerCase()
+  it('int', async () => {
+    // console.log((await oracleClient.turnInt('0x665b306c39431e513382c5f641b75e6778f86e95')).toString())
+    // const res = (await oracleClient.turnInt(owner)).toString(16)
+    const actual = '0x' + (await oracleClient.turnInt(owner)).toString(16)
+    // console.log((await oracleClient.turnInt(owner)).toString(16))
+    // console.log(web3.utils.asciiToHex(await oracleClient.turnInt(owner)))
+    assert.equal(actual, owner.toLowerCase())
+  })
 
-  //   beforeEach(async () => {
-  //     await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
-  //       from: admin
-  //     })
-  //     const tx = await oracleClient.requestWinner(poolAddress, payment)
+  describe('#requestWinner', async () => {
+    context('without LINK', () => {
+      it('reverts', async () => {
+        await expectRevert.unspecified(
+          oracleClient.requestWinner(poolAddress, payment)
+        )
+      })
+    })
 
-  //     request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
-  //     await oc.fulfillOracleRequest(
-  //       ...oracle.convertFufillParams(request, response, {
-  //         from: oracleNode,
-  //         gas: 500000
-  //       })
-  //     )
-  //   })
+    context('with LINK', () => {
+      beforeEach(async () => {
+        await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
+          from: admin
+        })
+      })
 
-  //   it('records the data given to it by the oracle', async () => {
-  //     const actualWinner = await oracleClient.data.call()
+      it('triggers a log event in the new Oracle contract', async () => {
+        const tx = await oracleClient.requestWinner(poolAddress, payment)
 
-  //     assert.equal(
-  //       response,
-  //       actualWinner
-  //       // web3.utils.padLeft(web3.utils.toHex(winner), 64),
-  //       // web3.utils.padLeft(expected, 64),
-  //     )
-  //   })
+        request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
+        assert.equal(oc.address, tx.receipt.rawLogs[3].address)
+        assert.equal(
+          request.topic,
+          web3.utils.keccak256(
+            'OracleRequest(bytes32,address,bytes32,uint256,address,bytes4,uint256,uint256,bytes)',
+          )
+        )
+      })
+    })
+  })
 
-  //   context('when called by anyone other than the oracle contract', () => {
-  //     it('does not accept the data provided', async () => {
-  //       await expectRevert.unspecified(
-  //         oracleClient.fulfill(request.requestId, response, { from: stranger })
-  //       )
-  //     })
-  //   })
-  // })
+  describe('#fulfill', async () => {
+    // const response = web3.utils.padRight(web3.utils.toHex(expected), 64)
+    // const response = web3.utils.padLeft(web3.utils.toHex(winner), 12)
+    const response = web3.utils.padLeft(winner, 64).toLowerCase()
+
+    beforeEach(async () => {
+      await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
+        from: admin
+      })
+      const tx = await oracleClient.requestWinner(poolAddress, payment)
+
+      request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
+      await oc.fulfillOracleRequest(
+        ...oracle.convertFufillParams(request, response, {
+          from: oracleNode,
+          gas: 500000
+        })
+      )
+    })
+
+    it('records the data given to it by the oracle', async () => {
+      const actualWinner = await oracleClient.data.call()
+
+      assert.equal(
+        response,
+        actualWinner
+        // web3.utils.padLeft(web3.utils.toHex(winner), 64),
+        // web3.utils.padLeft(expected, 64),
+      )
+    })
+
+    context('when called by anyone other than the oracle contract', () => {
+      it('does not accept the data provided', async () => {
+        await expectRevert.unspecified(
+          oracleClient.fulfill(request.requestId, response, { from: stranger })
+        )
+      })
+    })
+  })
 })

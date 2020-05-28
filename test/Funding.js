@@ -247,9 +247,6 @@ contract('Funding', accounts => {
     const admin = accounts[1]
 
     const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')
-    const url =
-      'https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD,EUR,JPY'
-    const path = 'USD'
     const payment = web3.utils.toWei('1')
 
     let oracleClient, linkToken, oc, request
