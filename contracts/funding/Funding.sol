@@ -126,6 +126,28 @@ contract Funding is Ownable, ReentrancyGuard {
         emit Deposited(msg.sender, _amount, _userId);
     }
 
+    function sponsor(uint256 _amount, string memory _userId)
+        public
+        open
+        nonReentrant
+    {
+        require(
+            ticketPrice == 0 || _amount >= ticketPrice,
+            "Funding/small-amount"
+        );
+        // Transfer the tokens into this contract
+        require(
+            token().transferFrom(msg.sender, address(this), _amount),
+            "Funding/t-fail"
+        );
+
+        // Deposit the funds
+        _depositFrom(msg.sender, _amount);
+        accountedBalance = accountedBalance.sub(_amount);
+
+        emit Deposited(msg.sender, _amount, _userId);
+    }
+
     /**
      * @notice Withdraw the sender's entire balance back to them.
      */
