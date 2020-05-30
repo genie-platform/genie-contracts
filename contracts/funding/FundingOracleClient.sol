@@ -63,10 +63,29 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
     Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
     req.addInt("level", level);
     // passing pool address as int
-    req.addUint("pool", uint256(_pool));
+    req.add("pool", uintToString(_pool));
     requestId = sendChainlinkRequestTo(oracle, req, _payment);
   }
 
+    function uintToString(address _pool) public pure returns (string memory _uintAsString) {
+      uint _i = uint256(_pool);
+      if (_i == 0) {
+          return "0";
+      }
+      uint j = _i;
+      uint len;
+      while (j != 0) {
+          len++;
+          j /= 10;
+      }
+      bytes memory bstr = new bytes(len);
+      uint k = len - 1;
+      while (_i != 0) {
+          bstr[k--] = byte(uint8(48 + _i % 10));
+          _i /= 10;
+      }
+      return string(bstr);
+    }
   // function turnInt(address x) public view returns (uint) {
   //   return uint256(x);
   // }

@@ -2,7 +2,7 @@ const FundingContext = require('./helpers/FundingContext')
 const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
 const { expectRevert } = require('@openzeppelin/test-helpers')
 const { oracle } = require('@chainlink/test-helpers')
-
+const BigNumber = require('bignumber.js')
 const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')
 const level = 90
 
@@ -53,15 +53,21 @@ contract('FundingOracleClient', accounts => {
   //   console.log(web3.utils.asciiToHex(await oracleClient.turnString(owner)))
   //   assert.equal(web3.utils.asciiToHex(await oracleClient.turnString(owner)), owner)
   // })
-
-  it('int', async () => {
-    // console.log((await oracleClient.turnInt('0x665b306c39431e513382c5f641b75e6778f86e95')).toString())
-    // const res = (await oracleClient.turnInt(owner)).toString(16)
-    const actual = '0x' + (await oracleClient.turnInt(owner)).toString(16)
-    // console.log((await oracleClient.turnInt(owner)).toString(16))
-    // console.log(web3.utils.asciiToHex(await oracleClient.turnInt(owner)))
+  it('uintToString', async () => {
+    const response = await oracleClient.uintToString(owner)
+    const actual = '0x' + new BigNumber(response).toString(16)
+    console.log({ actual })
     assert.equal(actual, owner.toLowerCase())
   })
+
+  // it('int', async () => {
+  //   // console.log((await oracleClient.turnInt('0x665b306c39431e513382c5f641b75e6778f86e95')).toString())
+  //   // const res = (await oracleClient.turnInt(owner)).toString(16)
+  //   const actual = '0x' + (await oracleClient.turnInt(owner)).toString(16)
+  //   // console.log((await oracleClient.turnInt(owner)).toString(16))
+  //   // console.log(web3.utils.asciiToHex(await oracleClient.turnInt(owner)))
+  //   assert.equal(actual, owner.toLowerCase())
+  // })
 
   describe('#requestWinner', async () => {
     context('without LINK', () => {
