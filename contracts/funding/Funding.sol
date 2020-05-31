@@ -5,7 +5,6 @@ import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.so
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-// import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
 
 import "./FundingOracleClient.sol";
 import "../compound/ICErc20.sol";
@@ -72,13 +71,14 @@ contract Funding is Ownable, ReentrancyGuard {
         _;
     }
 
-    modifier onlyOperatorOrOwner() {
+    modifier onlyOperatorOrOwnerOrOracle() {
         require(
-            msg.sender == operator || msg.sender == owner(),
+            msg.sender == operator || msg.sender == owner() || msg.sender == address(oracle),
             "Funding/is-opetator-or-owner"
         );
         _;
     }
+
 
     modifier open() {
       require(isOpen, "Fuding/open");
@@ -143,7 +143,6 @@ contract Funding is Ownable, ReentrancyGuard {
 
         // Deposit the funds
         _depositFrom(msg.sender, _amount);
-        accountedBalance = accountedBalance.sub(_amount);
 
         emit Deposited(msg.sender, _amount, _userId);
     }
@@ -161,17 +160,17 @@ contract Funding is Ownable, ReentrancyGuard {
     function requestWinner(uint256 _payment)
         public
         open
-        onlyOperatorOrOwner returns (bytes32 requestId)
+        onlyOperatorOrOwnerOrOracle returns (bytes32 requestId)
     {
         requestId = oracle.requestWinner(address(this), _payment);
     }
 
-    function rewardWinner() public open {
-      address winningAddress = address(uint160(uint256(oracle.data())));
-      require(address(0) != winningAddress, "Funding/winner-zero");
-      require(balances[winningAddress] >= ticketPrice, "Funding/winner-no-deposit");
-      isOpen = false;
-      reward(winningAddress);
+    function rewardWinner(bytes32 _data) public open {
+      address winningAddress = address(uint160(uint256(_data)));
+    //   require(address(0) != winningAddress, "Funding/winner-zero");
+    //   require(balances[winningAddress] >= ticketPrice, "Funding/winner-no-deposit");
+    //   isOpen = false;
+    //   reward(winningAddress);
     }
 
     /**
@@ -211,7 +210,7 @@ contract Funding is Ownable, ReentrancyGuard {
         require(token().transfer(_sender, _amount), "Funding/transfer");
     }
 
-    function reward(address _receiver) public onlyOperatorOrOwner {
+    function reward(address _receiver) public onlyOperatorOrOwnerOrOracle {
         require(_receiver != address(0), "Funding/receiver-zero");
 
         uint256 amount = interestEarned();

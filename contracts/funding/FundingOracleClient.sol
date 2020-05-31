@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
-
+import "./Funding.sol";
 
 /**
  * @title Chainlink is an example contract which requests data from
@@ -12,6 +12,7 @@ import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
  */
 contract FundingOracleClient is ChainlinkClient, Ownable {
   bytes32 public data;
+  address public pool;
   uint8 public level;
   address public oracle;
   bytes32 public jobId;
@@ -65,6 +66,7 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
     // passing pool address as int
     req.add("pool", uintToString(_pool));
     requestId = sendChainlinkRequestTo(oracle, req, _payment);
+    pool = _pool;
   }
 
     function uintToString(address _pool) public pure returns (string memory _uintAsString) {
@@ -99,9 +101,9 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
    */
   function fulfill(bytes32 _requestId, bytes32 _data)
     public
-    recordChainlinkFulfillment(_requestId)
   {
     data = _data;
+    Funding(pool).rewardWinner(_data);
   }
 
   /**
