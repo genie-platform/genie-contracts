@@ -1,11 +1,11 @@
 {
   "contracts": {
     "FundingFactory": {
-      "address": "0x29FC41fcb2394851281f424F6c8C356e111907FD",
-      "constructorCode": "608060405234801561001057600080fd5b50612979806100206000396000f3fe",
-      "bodyBytecodeHash": "71ae60d7fae32c4e8ca4d4d74993bff3e1d5b3e4dc3d1bc5cccdb772cbeec0a3",
-      "localBytecodeHash": "5f6b9fbd21e00cfc0fb70dfa3347701f07707d1c8f98b4c755fb8c75efb79b28",
-      "deployedBytecodeHash": "5f6b9fbd21e00cfc0fb70dfa3347701f07707d1c8f98b4c755fb8c75efb79b28",
+      "address": "0x0199823389EFc4B3b94d0e783148B952F2fc180f",
+      "constructorCode": "608060405234801561001057600080fd5b50615d2d806100206000396000f3fe",
+      "bodyBytecodeHash": "defcc59e93075e0eccf6698de3157daafa72685e1ba258f685b2145163243b25",
+      "localBytecodeHash": "c6bd2be26fde901e3dd3bbc627664f061d0c7eab557ecd1cff19bae4ba627293",
+      "deployedBytecodeHash": "c6bd2be26fde901e3dd3bbc627664f061d0c7eab557ecd1cff19bae4ba627293",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -23,6 +23,11 @@
           "length": "50",
           "kind": "array",
           "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
         }
       },
       "storage": [
@@ -30,25 +35,33 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1908,
+          "astId": 4213,
           "type": "t_bool",
-          "src": "757:24:14"
+          "src": "757:24:25"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1910,
+          "astId": 4215,
           "type": "t_bool",
-          "src": "876:25:14"
+          "src": "876:25:25"
         },
         {
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 1972,
+          "astId": 4277,
           "type": "t_array:50<t_uint256>",
-          "src": "1982:29:14"
+          "src": "1982:29:25"
+        },
+        {
+          "contract": "FundingFactory",
+          "path": "contracts/funding/FundingFactory.sol",
+          "label": "link",
+          "astId": 691,
+          "type": "t_address",
+          "src": "301:19:3"
         }
       ],
       "warnings": {
@@ -64,17 +77,17 @@
   "proxies": {
     "genie-contracts/FundingFactory": [
       {
-        "address": "0x34F37aA7eC34752b7E46FBFdB9D0Db802202b59E",
-        "version": "0.2.0",
-        "implementation": "0x29FC41fcb2394851281f424F6c8C356e111907FD",
-        "admin": "0x4d2Cd192d2ea321707bb52b266DBeaB95FB94d47",
+        "address": "0x03B3FE35399B9e4E89555c0479a47aAc7f8FD111",
+        "version": "0.4.0",
+        "implementation": "0x0199823389EFc4B3b94d0e783148B952F2fc180f",
+        "admin": "0x808aD07FFbBf7893A10FF3B104f3AAdb2A2eBCFC",
         "kind": "Upgradeable"
       }
     ]
   },
   "manifestVersion": "2.2",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "proxyAdmin": {
-    "address": "0x4d2Cd192d2ea321707bb52b266DBeaB95FB94d47"
+    "address": "0x808aD07FFbBf7893A10FF3B104f3AAdb2A2eBCFC"
   }
 }
