@@ -2,6 +2,7 @@
 const FundingContext = require('./helpers/FundingContext')
 const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
 const truffleAssert = require('truffle-assertions')
+const { expectRevert } = require('@openzeppelin/test-helpers')
 const BN = require('bn.js')
 const { oracle } = require('@chainlink/test-helpers')
 
@@ -16,7 +17,7 @@ contract('Funding', accounts => {
 
   // const userId1 = web3.utils.fromAscii('coolUser')
   // const userId2 = web3.utils.fromAscii('neatUser')
-  console.log({ppp: web3.utils.toHex('eLeIR8D+fl0Jhfb9OMubJhsJOcY=') })
+
   const userId1 = 'coolUser'
   const userId2 = 'neatUser'
 
@@ -249,16 +250,16 @@ contract('Funding', accounts => {
     const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')
     const payment = web3.utils.toWei('1')
 
-    let oracleClient, linkToken, oc, request
+    let oracleClientAddress, linkToken, oc, request
     beforeEach(async () => {
       const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
       funding = response.funding
-      oracleClient = await funding.oracle()
+      oracleClientAddress = await funding.oracle()
       linkToken = fundingContext.linkToken
       oc = fundingContext.oracle
 
       await token.approve(funding.address, 100, { from: user1 })
-      await linkToken.transfer(oracleClient, web3.utils.toWei('1', 'ether'), {
+      await linkToken.transfer(oracleClientAddress, web3.utils.toWei('1', 'ether'), {
         from: admin
       })
 
@@ -287,6 +288,68 @@ contract('Funding', accounts => {
         )
       })
     })
-  })
 
+    describe('#fulfill', async () => {
+      const winner = user1
+      const stranger = accounts[2]
+      let oracleClient
+
+      // const response = web3.utils.padRight(web3.utils.toHex(expected), 64)
+      // const response = web3.utils.padLeft(web3.utils.toHex(winner), 12)
+      const response = web3.utils.padLeft(winner, 64).toLowerCase()
+
+      beforeEach(async () => {
+        oracleClient = await FundingOracleClient.at(await funding.oracle())
+
+        await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
+          from: admin
+        })
+        // const tx = await oracleClient.requestWinner(funding.address, payment)
+        await funding.deposit(await funding.ticketPrice(), userId1, { from: winner })
+
+        await moneyMarket.reward(funding.address)
+        assert.equal(await fundingContext.interestEarned(funding), '2')
+
+        const tx = await funding.requestWinner(payment, { from: owner })
+
+        request = oracle.decodeRunRequest(tx.receipt.rawLogs[3])
+        await oc.fulfillOracleRequest(
+          ...oracle.convertFufillParams(request, response, {
+            from: oracleNode,
+            gas: 500000
+          })
+        )
+      })
+
+      it('records the data given to it by the oracle', async () => {
+        const actualWinner = await oracleClient.data.call()
+
+        assert.equal(
+          response,
+          actualWinner
+          // web3.utils.padLeft(web3.utils.toHex(winner), 64),
+          // web3.utils.padLeft(expected, 64),
+        )
+      })
+
+      it('sends the reward to the winner', async () => {
+        const actualWinner = await oracleClient.data.call()
+
+        assert.equal(
+          response,
+          actualWinner
+          // web3.utils.padLeft(web3.utils.toHex(winner), 64),
+          // web3.utils.padLeft(expected, 64),
+        )
+      })
+
+      context('when called by anyone other than the oracle contract', () => {
+        it('does not accept the data provided', async () => {
+          await expectRevert.unspecified(
+            oracleClient.fulfill(request.requestId, response, { from: stranger })
+          )
+        })
+      })
+    })
+  })
 })

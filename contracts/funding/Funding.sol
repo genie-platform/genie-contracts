@@ -165,12 +165,12 @@ contract Funding is Ownable, ReentrancyGuard {
         requestId = oracle.requestWinner(address(this), _payment);
     }
 
-    function rewardWinner(bytes32 _data) public open {
+    function rewardWinner(bytes32 _data) public open onlyOperatorOrOwnerOrOracle {
       address winningAddress = address(uint160(uint256(_data)));
-    //   require(address(0) != winningAddress, "Funding/winner-zero");
-    //   require(balances[winningAddress] >= ticketPrice, "Funding/winner-no-deposit");
-    //   isOpen = false;
-    //   reward(winningAddress);
+      require(address(0) != winningAddress, "Funding/winner-zero");
+      require(balances[winningAddress] >= ticketPrice, "Funding/winner-no-deposit");
+      isOpen = false;
+      reward(winningAddress);
     }
 
     /**

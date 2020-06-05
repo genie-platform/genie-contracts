@@ -101,6 +101,7 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
    */
   function fulfill(bytes32 _requestId, bytes32 _data)
     public
+    recordChainlinkFulfillment(_requestId)
   {
     data = _data;
     Funding(pool).rewardWinner(_data);
