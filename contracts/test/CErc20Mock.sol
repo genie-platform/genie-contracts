@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.6.0;
 
 import "../compound/ICErc20.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
