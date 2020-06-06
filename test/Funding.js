@@ -12,11 +12,6 @@ contract('Funding', accounts => {
   const user1 = accounts[2]
   const user2 = accounts[3]
   const user3 = accounts[4]
-  // console.log(owner)
-  // console.log(web3.eth.abi.encodeParameter('bytes32', owner))
-
-  // const userId1 = web3.utils.fromAscii('coolUser')
-  // const userId2 = web3.utils.fromAscii('neatUser')
 
   const userId1 = 'coolUser'
   const userId2 = 'neatUser'
@@ -306,6 +301,7 @@ contract('Funding', accounts => {
         })
         // const tx = await oracleClient.requestWinner(funding.address, payment)
         await funding.deposit(await funding.ticketPrice(), userId1, { from: winner })
+        user1BalanceBefore = await token.balanceOf(user1)
 
         await moneyMarket.reward(funding.address)
         assert.equal(await fundingContext.interestEarned(funding), '2')
@@ -319,7 +315,15 @@ contract('Funding', accounts => {
             gas: 500000
           })
         )
+        assert.equal(await fundingContext.interestEarned(funding), '0')
+        // assert.equal(await token.balanceOf(winner), '12')
+        assert.equal((await token.balanceOf(winner)).toString(), user1BalanceBefore.add(new BN('2')).toString())
       })
+
+      // it('to address from bytes should work', async () => {
+      //   const bytes = '0x000000000000000000000000d418c5d0c4a3d87a6c555b7aa41f13ef87485ec6'
+      //   assert.equal('0xD418c5d0c4a3D87a6c555B7aA41f13EF87485Ec6', await funding.toAddress(bytes))
+      // })
 
       it('records the data given to it by the oracle', async () => {
         const actualWinner = await oracleClient.data.call()

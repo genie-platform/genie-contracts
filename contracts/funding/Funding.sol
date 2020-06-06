@@ -173,6 +173,10 @@ contract Funding is Ownable, ReentrancyGuard {
       reward(winningAddress);
     }
 
+    // function toAddress(bytes32 _data) public pure returns (address) {
+    //     return address(uint160(uint256(_data)));
+    // }
+
     /**
      * @notice Deposits into the pool for a user.  Updates their balance and transfers their tokens into this contract.
      * @param _spender The user who is depositing
