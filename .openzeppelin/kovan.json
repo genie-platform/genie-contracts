@@ -1,11 +1,11 @@
 {
   "contracts": {
     "FundingFactory": {
-      "address": "0x0199823389EFc4B3b94d0e783148B952F2fc180f",
-      "constructorCode": "608060405234801561001057600080fd5b50615d2d806100206000396000f3fe",
-      "bodyBytecodeHash": "defcc59e93075e0eccf6698de3157daafa72685e1ba258f685b2145163243b25",
-      "localBytecodeHash": "c6bd2be26fde901e3dd3bbc627664f061d0c7eab557ecd1cff19bae4ba627293",
-      "deployedBytecodeHash": "c6bd2be26fde901e3dd3bbc627664f061d0c7eab557ecd1cff19bae4ba627293",
+      "address": "0x3355BD85eB111BD67121Cbef0Cf48c58D1CF5f83",
+      "constructorCode": "608060405234801561001057600080fd5b50615fe6806100206000396000f3fe",
+      "bodyBytecodeHash": "f7655dbb85e36ca104aca17ff9a32a3abf39c9340d7930ae9cba78bb0d0f25bc",
+      "localBytecodeHash": "4e0ed1de97b99a377373614d4a304bb4d099c767fde634eaa0f89a3ae32309ea",
+      "deployedBytecodeHash": "4e0ed1de97b99a377373614d4a304bb4d099c767fde634eaa0f89a3ae32309ea",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -35,7 +35,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 4213,
+          "astId": 4229,
           "type": "t_bool",
           "src": "757:24:25"
         },
@@ -43,7 +43,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 4215,
+          "astId": 4231,
           "type": "t_bool",
           "src": "876:25:25"
         },
@@ -51,7 +51,7 @@
           "contract": "Initializable",
           "path": "@openzeppelin/upgrades/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 4277,
+          "astId": 4293,
           "type": "t_array:50<t_uint256>",
           "src": "1982:29:25"
         },
@@ -59,7 +59,7 @@
           "contract": "FundingFactory",
           "path": "contracts/funding/FundingFactory.sol",
           "label": "link",
-          "astId": 691,
+          "astId": 693,
           "type": "t_address",
           "src": "301:19:3"
         }
@@ -69,7 +69,9 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
       }
     }
   },
@@ -79,7 +81,7 @@
       {
         "address": "0x03B3FE35399B9e4E89555c0479a47aAc7f8FD111",
         "version": "0.4.0",
-        "implementation": "0x0199823389EFc4B3b94d0e783148B952F2fc180f",
+        "implementation": "0x3355BD85eB111BD67121Cbef0Cf48c58D1CF5f83",
         "admin": "0x808aD07FFbBf7893A10FF3B104f3AAdb2A2eBCFC",
         "kind": "Upgradeable"
       }
