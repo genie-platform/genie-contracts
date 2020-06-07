@@ -1,7 +1,7 @@
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
-import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
+import "@chainlink/contracts/src/v0.6/ChainlinkClient.sol";
 import "./Funding.sol";
 
 /**
@@ -10,7 +10,7 @@ import "./Funding.sol";
  * @dev This contract is designed to work on multiple networks, including
  * local test networks
  */
-contract FundingOracleClient is ChainlinkClient, Ownable {
+contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
   bytes32 public data;
   address public pool;
   uint8 public level;
@@ -36,7 +36,7 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
     oracle = _oracle;
     jobId = _jobId;
     level = _level;
-    Ownable.initialize(msg.sender);
+    OwnableUpgradeSafe.initialize(msg.sender);
   }
 
   /**

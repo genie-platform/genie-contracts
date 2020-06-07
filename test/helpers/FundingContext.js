@@ -2,7 +2,8 @@ const BN = require('bn.js')
 const truffleAssert = require('truffle-assertions')
 const {
   SUPPLY_RATE_PER_BLOCK,
-  MAX_NEW_FIXED
+  MAX_NEW_FIXED,
+  ZERO_ADDRESS
 } = require('./constants')
 
 const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')

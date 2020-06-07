@@ -1,16 +1,16 @@
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
 import "./FundingOracleClient.sol";
 import "../compound/ICErc20.sol";
 
 
-contract Funding is Ownable, ReentrancyGuard {
+contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRecipient {
     using SafeMath for uint256;
 
     /**
@@ -38,6 +38,11 @@ contract Funding is Ownable, ReentrancyGuard {
      * Contract's operator
      */
     address public operator;
+
+    /**
+     * Contract's trustedForwarder for GSN
+     */
+    address public trustedForwarder;
 
     /**
      * The total of all balances
@@ -90,18 +95,21 @@ contract Funding is Ownable, ReentrancyGuard {
         address _cToken,
         address _operator,
         address _oracle,
-        uint256 _ticketPrice
+        uint256 _ticketPrice,
+        address _trustedForwarder
     ) public {
         require(_owner != address(0), "Funding/owner-zero");
         require(_cToken != address(0), "Funding/ctoken-zero");
         require(_operator != address(0), "Funding/operator-zero");
 
-        Ownable.initialize(_owner);
+        OwnableUpgradeSafe.initialize(_owner);
         cToken = ICErc20(_cToken);
         operator = _operator;
         oracle = FundingOracleClient(_oracle);
 
         ticketPrice = _ticketPrice;
+
+        trustedForwarder = _trustedForwarder;
         isOpen = true;
     }
 
