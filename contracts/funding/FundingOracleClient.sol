@@ -36,7 +36,7 @@ contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
     oracle = _oracle;
     jobId = _jobId;
     level = _level;
-    OwnableUpgradeSafe.initialize(msg.sender);
+    // OwnableUpgradeSafe.initialize(msg.sender);
   }
 
   /**

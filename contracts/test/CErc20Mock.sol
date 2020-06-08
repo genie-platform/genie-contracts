@@ -15,17 +15,17 @@ contract CErc20Mock is Initializable, ICErc20 {
     __supplyRatePerBlock = _supplyRatePerBlock;
   }
 
-  function mint(uint256 amount) external returns (uint) {
+  function mint(uint256 amount) external override returns (uint) {
     ownerTokenAmounts[msg.sender] = ownerTokenAmounts[msg.sender] + amount;
     require(IERC20(underlying).transferFrom(msg.sender, address(this), amount), "could not transfer tokens");
     return 0;
   }
 
-  function getCash() external view returns (uint) {
+  function getCash() external override view returns (uint) {
     return IERC20(underlying).balanceOf(address(this));
   }
 
-  function redeemUnderlying(uint256 requestedAmount) external returns (uint) {
+  function redeemUnderlying(uint256 requestedAmount) external override returns (uint) {
     require(requestedAmount <= ownerTokenAmounts[msg.sender], "insufficient underlying funds");
     ownerTokenAmounts[msg.sender] = ownerTokenAmounts[msg.sender] - requestedAmount;
     require(IERC20(underlying).transfer(msg.sender, requestedAmount), "could not transfer tokens");
@@ -39,11 +39,11 @@ contract CErc20Mock is Initializable, ICErc20 {
     ownerTokenAmounts[account] = ownerTokenAmounts[account] + amount;
   }
 
-  function balanceOfUnderlying(address account) external returns (uint) {
+  function balanceOfUnderlying(address account) external override returns (uint) {
     return ownerTokenAmounts[account];
   }
 
-  function supplyRatePerBlock() external view returns (uint) {
+  function supplyRatePerBlock() external override view returns (uint) {
     return __supplyRatePerBlock;
   }
 

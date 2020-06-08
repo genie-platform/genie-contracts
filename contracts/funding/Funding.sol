@@ -4,6 +4,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
 import "./FundingOracleClient.sol";
@@ -42,7 +43,7 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
     /**
      * Contract's trustedForwarder for GSN
      */
-    address public trustedForwarder;
+    // address public trustedForwarder;
 
     /**
      * The total of all balances
@@ -102,7 +103,7 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         require(_cToken != address(0), "Funding/ctoken-zero");
         require(_operator != address(0), "Funding/operator-zero");
 
-        OwnableUpgradeSafe.initialize(_owner);
+        // OwnableUpgradeSafe.initialize(_owner);
         cToken = ICErc20(_cToken);
         operator = _operator;
         oracle = FundingOracleClient(_oracle);
@@ -112,6 +113,12 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         trustedForwarder = _trustedForwarder;
         isOpen = true;
     }
+
+    function _msgSender() internal override(ContextUpgradeSafe, BaseRelayRecipient)
+      view returns (address payable) {
+        return BaseRelayRecipient._msgSender();
+      }
+
 
     function deposit(uint256 _amount, string memory _userId)
         public
