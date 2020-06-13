@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.0; 
 
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC20/IERC20.sol";
@@ -6,12 +6,12 @@ import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/GSN/Context.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
-
+import "@opengsn/gsn/contracts/interfaces/IKnowForwarderAddress.sol";
 import "./FundingOracleClient.sol";
 import "../compound/ICErc20.sol";
 
 
-contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRecipient {
+contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRecipient, IKnowForwarderAddress {
     using SafeMath for uint256;
 
     /**
@@ -103,6 +103,7 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         require(_cToken != address(0), "Funding/ctoken-zero");
         require(_operator != address(0), "Funding/operator-zero");
 
+        __Ownable_init();
         // OwnableUpgradeSafe.initialize(_owner);
         cToken = ICErc20(_cToken);
         operator = _operator;
@@ -114,10 +115,17 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         isOpen = true;
     }
 
+    function getTrustedForwarder() public view
+    override returns(address) {
+		return trustedForwarder;
+	}
+
     function _msgSender() internal override(ContextUpgradeSafe, BaseRelayRecipient)
       view returns (address payable) {
         return BaseRelayRecipient._msgSender();
       }
+
+    string public override versionRecipient = "0.4.0";
 
 
     function deposit(uint256 _amount, string memory _userId)
@@ -279,19 +287,19 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
      * @param _blocks The number of block that interest accrued for
      * @return The total estimated interest as a 18 point fixed decimal.
      */
-    function estimatedInterestRate(uint256 _blocks)
-        public
-        view
-        returns (uint256)
-    {
-        return supplyRatePerBlock().mul(_blocks);
-    }
+    // function estimatedInterestRate(uint256 _blocks)
+    //     public
+    //     view
+    //     returns (uint256)
+    // {
+    //     return supplyRatePerBlock().mul(_blocks);
+    // }
 
     /**
      * @notice Convenience function to return the supplyRatePerBlock value from the money market contract.
      * @return The cToken supply rate per block
      */
-    function supplyRatePerBlock() public view returns (uint256) {
-        return cToken.supplyRatePerBlock();
-    }
+    // function supplyRatePerBlock() public view returns (uint256) {
+    //     return cToken.supplyRatePerBlock();
+    // }
 }

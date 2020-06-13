@@ -2,8 +2,7 @@ const BN = require('bn.js')
 const truffleAssert = require('truffle-assertions')
 const {
   SUPPLY_RATE_PER_BLOCK,
-  MAX_NEW_FIXED,
-  ZERO_ADDRESS
+  MAX_NEW_FIXED
 } = require('./constants')
 
 const jobId = web3.utils.toHex('4c7b7ffb66b344fbaa64995af81e355a')
@@ -22,6 +21,8 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
   const { LinkToken } = require('@chainlink/contracts/truffle/v0.4/LinkToken')
   const { Oracle } = require('@chainlink/contracts/truffle/v0.5/Oracle')
 
+  const TrustedForwarder = artifacts.require('TrustedForwarder.sol')
+
   this.init = async () => {
     this.jobId = jobId
     this.level = level
@@ -32,11 +33,12 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
     this.oracle = await Oracle.new(this.linkToken.address, { from: admin })
     await this.token.mint(this.moneyMarket.address, new BN(MAX_NEW_FIXED).add(new BN(web3.utils.toWei('10000000', 'ether'))).toString())
     await this.token.mint(admin, web3.utils.toWei('100000', 'ether'))
+    this.forwarder = await TrustedForwarder.new()
   }
 
-  this.newToken = async (decimals = 18) => {
+  this.newToken = async () => {
     const token = await Token.new({ from: admin })
-    await token.initialize(owner, 'Token', 'TOK', decimals)
+    await token.initialize(owner, 'Token', 'TOK')
     await token.mint(owner, web3.utils.toWei('100000', 'ether'))
     await token.mint(user1, web3.utils.toWei('100000', 'ether'))
     await token.mint(user2, web3.utils.toWei('100000', 'ether'))
@@ -53,11 +55,11 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
   this.createFunding = async (factory, rest) => {
     let args
     if (rest.length < 4) {
-      args = [...rest, this.oracle.address, jobId, 100, 0]
+      args = [...rest, this.oracle.address, jobId, 100, 0, this.forwarder.address]
     } else if (rest.length < 5) {
-      args = [...rest, 100, 0]
+      args = [...rest, 100, 0, this.forwarder.address]
     } else if (rest.length < 5) {
-      args = [...rest, 0]
+      args = [...rest, 0, this.forwarder.address]
     } else {
       args = rest
     }
