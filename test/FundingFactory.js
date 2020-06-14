@@ -27,7 +27,6 @@ contract('FundingFactory', accounts => {
       assert.equal(await funding.operator(), operator, 'operator initialized')
       assert.equal(await funding.owner(), owner, 'owner initialized')
       assert.equal(await funding.ticketPrice(), 0, 'ticketPrice default')
-
     })
 
     it('oracle should be not zero', async () => {
@@ -52,7 +51,7 @@ contract('FundingFactory', accounts => {
     })
 
     it('ticket price should be correct', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
+      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10, fundingContext.forwarder.address])
       assert.equal(await funding.ticketPrice(), 10, 'ticket price initialized')
     })
   })

@@ -36,6 +36,8 @@ contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
     oracle = _oracle;
     jobId = _jobId;
     level = _level;
+
+    __Ownable_init();
     // OwnableUpgradeSafe.initialize(msg.sender);
   }
 
@@ -63,10 +65,17 @@ contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
   {
     Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
     req.addInt("level", level);
-    // passing pool address as int
+    // // passing pool address as int
     req.add("pool", uintToString(_pool));
     requestId = sendChainlinkRequestTo(oracle, req, _payment);
     pool = _pool;
+    // uint requestCount = 0;
+    // requestId = keccak256(abi.encodePacked(this, requestCount));
+    // req.nonce = requestCount;
+    // pendingRequests[requestId] = address(this);
+    // emit ChainlinkRequested(requestId);
+    // require(link.transferAndCall(address(this), _payment, encodeRequest(req)), "unable to transferAndCall to oracle");
+    // requestCount += 1;
   }
 
     function uintToString(address _pool) public pure returns (string memory _uintAsString) {
@@ -123,15 +132,15 @@ contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
    * the request to cancel
    * @param _expiration The expiration generated for the request to cancel
    */
-  function cancelRequest(
-    bytes32 _requestId,
-    uint256 _payment,
-    bytes4 _callbackFunctionId,
-    uint256 _expiration
-  )
-    public
-    onlyOwner
-  {
-    cancelChainlinkRequest(_requestId, _payment, _callbackFunctionId, _expiration);
-  }
+  // function cancelRequest(
+  //   bytes32 _requestId,
+  //   uint256 _payment,
+  //   bytes4 _callbackFunctionId,
+  //   uint256 _expiration
+  // )
+  //   public
+  //   onlyOwner
+  // {
+  //   cancelChainlinkRequest(_requestId, _payment, _callbackFunctionId, _expiration);
+  // }
 }

@@ -105,6 +105,7 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
 
         __Ownable_init();
         // OwnableUpgradeSafe.initialize(_owner);
+
         cToken = ICErc20(_cToken);
         operator = _operator;
         oracle = FundingOracleClient(_oracle);
@@ -149,26 +150,26 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         emit Deposited(msg.sender, _amount, _userId);
     }
 
-    function sponsor(uint256 _amount, string memory _userId)
-        public
-        open
-        nonReentrant
-    {
-        require(
-            ticketPrice == 0 || _amount >= ticketPrice,
-            "Funding/small-amount"
-        );
-        // Transfer the tokens into this contract
-        require(
-            token().transferFrom(msg.sender, address(this), _amount),
-            "Funding/t-fail"
-        );
+    // function sponsor(uint256 _amount, string memory _userId)
+    //     public
+    //     open
+    //     nonReentrant
+    // {
+    //     require(
+    //         ticketPrice == 0 || _amount >= ticketPrice,
+    //         "Funding/small-amount"
+    //     );
+    //     // Transfer the tokens into this contract
+    //     require(
+    //         token().transferFrom(msg.sender, address(this), _amount),
+    //         "Funding/t-fail"
+    //     );
 
-        // Deposit the funds
-        _depositFrom(msg.sender, _amount);
+    //     // Deposit the funds
+    //     _depositFrom(msg.sender, _amount);
 
-        emit Deposited(msg.sender, _amount, _userId);
-    }
+    //     emit Deposited(msg.sender, _amount, _userId);
+    // }
 
     /**
      * @notice Withdraw the sender's entire balance back to them.
@@ -188,7 +189,8 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         requestId = oracle.requestWinner(address(this), _payment);
     }
 
-    function rewardWinner(bytes32 _data) public open onlyOperatorOrOwnerOrOracle {
+    // function rewardWinner(bytes32 _data) public open onlyOperatorOrOwnerOrOracle {
+    function rewardWinner(bytes32 _data) public open {
       address winningAddress = address(uint160(uint256(_data)));
       require(address(0) != winningAddress, "Funding/winner-zero");
       require(balances[winningAddress] >= ticketPrice, "Funding/winner-no-deposit");
@@ -200,11 +202,11 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
     //     return address(uint160(uint256(_data)));
     // }
 
-    /**
-     * @notice Deposits into the pool for a user.  Updates their balance and transfers their tokens into this contract.
-     * @param _spender The user who is depositing
-     * @param _amount The amount they are depositing
-     */
+    // /**
+    //  * @notice Deposits into the pool for a user.  Updates their balance and transfers their tokens into this contract.
+    //  * @param _spender The user who is depositing
+    //  * @param _amount The amount they are depositing
+    //  */
     function _depositFrom(address _spender, uint256 _amount) internal {
         require(_amount != 0, "Funding/deposit-zero");
         // Update the user's balance

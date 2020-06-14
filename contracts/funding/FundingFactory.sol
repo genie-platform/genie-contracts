@@ -21,6 +21,7 @@ contract FundingFactory is Initializable {
       address _oracle, bytes32 _jobId, uint8 _level, uint256 _ticketPrice, address _trustedForwarder) public  returns (address fundingAddress) {
     FundingOracleClient oracle = new FundingOracleClient(_oracle, _jobId, _level, link);
     Funding funding = new Funding(msg.sender, _cToken, _operator, address(oracle), _ticketPrice, _trustedForwarder);
+    funding.transferOwnership(msg.sender);
 
     fundingAddress = address(funding);
     oracle.transferOwnership(fundingAddress);

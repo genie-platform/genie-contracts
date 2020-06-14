@@ -53,7 +53,7 @@ contract('FundingOracleClient', accounts => {
   // })
   it('uintToString', async () => {
     const response = await oracleClient.uintToString(owner)
-    const actual = '0x' + new BigNumber(response).toString(16)
+    const actual = '0x0' + new BigNumber(response).toString(16)
     console.log({ actual })
     assert.equal(actual, owner.toLowerCase())
   })
