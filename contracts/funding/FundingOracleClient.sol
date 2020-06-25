@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts-ethereum-package/contracts/access/Ownable.sol";
 import "@chainlink/contracts/src/v0.6/ChainlinkClient.sol";
 import "./Funding.sol";
-
+import { FundingUtils } from "./FundingUtils.sol";
 /**
  * @title Chainlink is an example contract which requests data from
  * the Chainlink network
@@ -11,6 +11,7 @@ import "./Funding.sol";
  * local test networks
  */
 contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
+
   bytes32 public data;
   address public pool;
   uint8 public level;
@@ -66,40 +67,10 @@ contract FundingOracleClient is ChainlinkClient, OwnableUpgradeSafe {
     Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfill.selector);
     req.addInt("level", level);
     // // passing pool address as int
-    req.add("pool", uintToString(_pool));
+    req.add("pool", FundingUtils.uintToString(_pool));
     requestId = sendChainlinkRequestTo(oracle, req, _payment);
     pool = _pool;
-    // uint requestCount = 0;
-    // requestId = keccak256(abi.encodePacked(this, requestCount));
-    // req.nonce = requestCount;
-    // pendingRequests[requestId] = address(this);
-    // emit ChainlinkRequested(requestId);
-    // require(link.transferAndCall(address(this), _payment, encodeRequest(req)), "unable to transferAndCall to oracle");
-    // requestCount += 1;
   }
-
-    function uintToString(address _pool) public pure returns (string memory _uintAsString) {
-      uint _i = uint256(_pool);
-      if (_i == 0) {
-          return "0";
-      }
-      uint j = _i;
-      uint len;
-      while (j != 0) {
-          len++;
-          j /= 10;
-      }
-      bytes memory bstr = new bytes(len);
-      uint k = len - 1;
-      while (_i != 0) {
-          bstr[k--] = byte(uint8(48 + _i % 10));
-          _i /= 10;
-      }
-      return string(bstr);
-    }
-  // function turnInt(address x) public view returns (uint) {
-  //   return uint256(x);
-  // }
 
   /**
    * @notice The fulfill method from requests created by this contract

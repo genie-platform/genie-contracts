@@ -61,7 +61,7 @@ contract('Funding', accounts => {
     context('with ticket price', () => {
       const ticketPrice = 5
       beforeEach(async () => {
-        const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 10, ticketPrice])
+        const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 10, ticketPrice, fundingContext.forwarder.address])
         funding = response.funding
         await token.approve(funding.address, 100, { from: user1 })
       })
@@ -247,7 +247,7 @@ contract('Funding', accounts => {
 
     let oracleClientAddress, linkToken, oc, request
     beforeEach(async () => {
-      const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
+      const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10, fundingContext.forwarder.address])
       funding = response.funding
       oracleClientAddress = await funding.oracle()
       linkToken = fundingContext.linkToken

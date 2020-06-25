@@ -104,6 +104,7 @@ contract Funding is OwnableUpgradeSafe, ReentrancyGuardUpgradeSafe, BaseRelayRec
         require(_operator != address(0), "Funding/operator-zero");
 
         __Ownable_init();
+        __ReentrancyGuard_init();
         // OwnableUpgradeSafe.initialize(_owner);
 
         cToken = ICErc20(_cToken);

@@ -1,5 +1,6 @@
 const FundingContext = require('./helpers/FundingContext')
 const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
+const FundingUtils = artifacts.require('FundingUtils.sol')
 const { expectRevert } = require('@openzeppelin/test-helpers')
 const { oracle } = require('@chainlink/test-helpers')
 const BigNumber = require('bignumber.js')
@@ -24,7 +25,7 @@ contract('FundingOracleClient', accounts => {
     oc = fundingContext.oracle
     // oracle = fundingContext.oracle
     // oc = await Oracle.new(linkToken.address, { from: owner })
-
+    await FundingOracleClient.link(FundingUtils)
     oracleClient = await FundingOracleClient.new(oc.address, jobId, level, linkToken.address)
 
     await oc.setFulfillmentPermission(oracleNode, true, {
@@ -51,12 +52,13 @@ contract('FundingOracleClient', accounts => {
   //   console.log(web3.utils.asciiToHex(await oracleClient.turnString(owner)))
   //   assert.equal(web3.utils.asciiToHex(await oracleClient.turnString(owner)), owner)
   // })
-  it('uintToString', async () => {
-    const response = await oracleClient.uintToString(owner)
-    const actual = '0x0' + new BigNumber(response).toString(16)
-    console.log({ actual })
-    assert.equal(actual, owner.toLowerCase())
-  })
+
+  // it('uintToString', async () => {
+  //   const response = await FundingUtils.uintToString(owner)
+  //   const actual = '0x0' + new BigNumber(response).toString(16)
+  //   console.log({ actual })
+  //   assert.equal(actual, owner.toLowerCase())
+  // })
 
   // it('int', async () => {
   //   // console.log((await oracleClient.turnInt('0x665b306c39431e513382c5f641b75e6778f86e95')).toString())

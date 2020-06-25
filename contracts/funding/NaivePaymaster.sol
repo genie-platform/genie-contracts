@@ -29,7 +29,7 @@ contract NaivePaymaster is BasePaymaster {
     ) external override view returns (bytes memory context) {
         (signature, approvalData, maxPossibleGas); // avoid a warning
 
-        require(relayRequest.target == ourTarget);
+        // require(relayRequest.target == ourTarget);
 
         // If we got here, we're successful. Return the time
         // to be able to match PreRelayed and PostRelayed events

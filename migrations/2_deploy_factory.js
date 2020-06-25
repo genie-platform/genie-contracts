@@ -1,9 +1,13 @@
 const FundingFactory = artifacts.require('FundingFactory')
+const FundingUtils = artifacts.require('FundingUtils')
 const { LinkToken } = require('@chainlink/contracts/truffle/v0.4/LinkToken')
 const { Oracle } = require('@chainlink/contracts/truffle/v0.5/Oracle')
 const TrustedForwarder = artifacts.require('TrustedForwarder')
 
-module.exports = function (deployer, network, [defaultAccount]) {
+module.exports = async function (deployer, network, [defaultAccount]) {
+  await deployer.deploy(FundingUtils)
+  await deployer.link(FundingUtils, FundingFactory)
+
   if (network === 'development') {
     LinkToken.setProvider(deployer.provider)
     Oracle.setProvider(deployer.provider)
