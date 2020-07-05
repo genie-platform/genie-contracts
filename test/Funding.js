@@ -1,6 +1,6 @@
 
 const FundingContext = require('./helpers/FundingContext')
-const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
+const FundingChainlinkClient = artifacts.require('FundingChainlinkClient.sol')
 const truffleAssert = require('truffle-assertions')
 const { expectRevert } = require('@openzeppelin/test-helpers')
 const BN = require('bn.js')
@@ -28,7 +28,7 @@ contract('Funding', accounts => {
     linkToken = fundingContext.linkToken
     factory = await fundingContext.createFactory(linkToken)
 
-    const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
+    const response = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
     funding = response.funding
     await token.approve(funding.address, 100, { from: user1 })
     await token.approve(funding.address, 100, { from: user2 })
@@ -61,7 +61,7 @@ contract('Funding', accounts => {
     context('with ticket price', () => {
       const ticketPrice = 5
       beforeEach(async () => {
-        const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 10, ticketPrice])
+        const response = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 10, ticketPrice])
         funding = response.funding
         await token.approve(funding.address, 100, { from: user1 })
       })
@@ -247,7 +247,7 @@ contract('Funding', accounts => {
 
     let oracleClientAddress, linkToken, oc, request
     beforeEach(async () => {
-      const response = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
+      const response = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
       funding = response.funding
       oracleClientAddress = await funding.oracle()
       linkToken = fundingContext.linkToken
@@ -264,8 +264,8 @@ contract('Funding', accounts => {
     })
 
     it('oracle owner should be the funding', async () => {
-      // const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
-      const oracle = await FundingOracleClient.at(await funding.oracle())
+      // const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
+      const oracle = await FundingChainlinkClient.at(await funding.oracle())
       assert.equal(await oracle.owner(), funding.address, 'oracle owner initialized')
     })
 
@@ -294,7 +294,7 @@ contract('Funding', accounts => {
       const response = web3.utils.padLeft(winner, 64).toLowerCase()
 
       beforeEach(async () => {
-        oracleClient = await FundingOracleClient.at(await funding.oracle())
+        oracleClient = await FundingChainlinkClient.at(await funding.oracle())
 
         await linkToken.transfer(oracleClient.address, web3.utils.toWei('1', 'ether'), {
           from: admin

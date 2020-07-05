@@ -3,7 +3,7 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "./Funding.sol";
-import "./FundingOracleClient.sol";
+import "./chainlink/PoeChainlinkClient.sol";
 
 contract FundingFactory is Initializable {
 
@@ -17,9 +17,9 @@ contract FundingFactory is Initializable {
     link = _link;
   }
 
-  function createFunding(address _cToken, address _operator,
+  function createPoeFunding(address _cToken, address _operator,
       address _oracle, bytes32 _jobId, uint8 _level, uint256 ticketPrice) public  returns (address fundingAddress) {
-    FundingOracleClient oracle = new FundingOracleClient(_oracle, _jobId, _level, link);
+    FundingChainlinkClient oracle = new PoeChainlinkClient(link, _oracle, _jobId, _level);
     Funding funding = new Funding(msg.sender, _cToken, _operator, address(oracle), ticketPrice);
 
     fundingAddress = address(funding);

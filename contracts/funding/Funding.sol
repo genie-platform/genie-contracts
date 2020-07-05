@@ -6,7 +6,7 @@ import "@openzeppelin/contracts-ethereum-package/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
-import "./FundingOracleClient.sol";
+import "./chainlink/FundingChainlinkClient.sol";
 import "../compound/ICErc20.sol";
 
 
@@ -62,7 +62,7 @@ contract Funding is Ownable, ReentrancyGuard {
     /**
      * Oracle
      */
-    FundingOracleClient public oracle;
+    FundingChainlinkClient public oracle;
 
     bool public isOpen;
 
@@ -99,7 +99,7 @@ contract Funding is Ownable, ReentrancyGuard {
         Ownable.initialize(_owner);
         cToken = ICErc20(_cToken);
         operator = _operator;
-        oracle = FundingOracleClient(_oracle);
+        oracle = FundingChainlinkClient(_oracle);
 
         ticketPrice = _ticketPrice;
         isOpen = true;

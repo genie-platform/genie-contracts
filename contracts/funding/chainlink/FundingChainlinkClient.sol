@@ -2,7 +2,7 @@ pragma solidity ^0.5.0;
 
 import "@openzeppelin/contracts-ethereum-package/contracts/ownership/Ownable.sol";
 import "@chainlink/contracts/src/v0.5/ChainlinkClient.sol";
-import "./Funding.sol";
+import "../Funding.sol";
 
 /**
  * @title Chainlink is an example contract which requests data from
@@ -10,7 +10,7 @@ import "./Funding.sol";
  * @dev This contract is designed to work on multiple networks, including
  * local test networks
  */
-contract FundingOracleClient is ChainlinkClient, Ownable {
+contract FundingChainlinkClient is ChainlinkClient, Ownable {
   bytes32 public data;
   address public pool;
   uint8 public level;
@@ -21,12 +21,11 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
    * @notice Deploy the contract with a specified address for the LINK
    * and Oracle contract addresses
    * @dev Sets the storage for the specified addresses
+   * @param _link The address of the LINK token contract
    * @param _oracle The address of the oracle contract
    * @param _jobId The job id of the adapter
-   * @param _level The poe level
-   * @param _link The address of the LINK token contract
    */
-  constructor(address _oracle, bytes32 _jobId, uint8 _level, address _link) public {
+  constructor(address _link, address _oracle, bytes32 _jobId) public {
     if (_link == address(0)) {
       setPublicChainlinkToken();
     } else {
@@ -35,7 +34,6 @@ contract FundingOracleClient is ChainlinkClient, Ownable {
 
     oracle = _oracle;
     jobId = _jobId;
-    level = _level;
     Ownable.initialize(msg.sender);
   }
 

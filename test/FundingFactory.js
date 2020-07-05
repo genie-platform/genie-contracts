@@ -1,5 +1,5 @@
 const FundingContext = require('./helpers/FundingContext')
-const FundingOracleClient = artifacts.require('FundingOracleClient.sol')
+const FundingChainlinkClient = artifacts.require('FundingChainlinkClient.sol')
 const { ZERO_ADDRESS } = require('./helpers/constants')
 
 contract('FundingFactory', accounts => {
@@ -21,9 +21,9 @@ contract('FundingFactory', accounts => {
     assert.equal(await factory.link(), fundingContext.linkToken.address, 'link initialized')
   })
 
-  describe('#createFunding', () => {
+  describe('#createPoeFunding', () => {
     it('User can create funding', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
+      const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
       assert.equal(await funding.operator(), operator, 'operator initialized')
       assert.equal(await funding.owner(), owner, 'owner initialized')
       assert.equal(await funding.ticketPrice(), 0, 'ticketPrice default')
@@ -31,28 +31,28 @@ contract('FundingFactory', accounts => {
     })
 
     it('oracle should be not zero', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
+      const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
       const oracle = await funding.oracle()
       assert.notEqual(oracle, ZERO_ADDRESS, 'oracle initialized')
     })
 
     it('oracle owner should be the funding', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
-      const oracle = await FundingOracleClient.at(await funding.oracle())
+      const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
+      const oracle = await FundingChainlinkClient.at(await funding.oracle())
 
       assert.equal(await oracle.owner(), funding.address, 'oracle owner initialized')
     })
 
     it('oracle address and jobId should be correct', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator])
-      const oracle = await FundingOracleClient.at(await funding.oracle())
+      const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator])
+      const oracle = await FundingChainlinkClient.at(await funding.oracle())
       assert.equal(await oracle.getChainlinkToken(), linkToken.address, 'token is not correct')
       assert.equal(await oracle.oracle(), fundingContext.oracle.address, 'oracle is not correct')
       assert.equal(await oracle.jobId(), fundingContext.jobId, 'jobId is not correct')
     })
 
     it('ticket price should be correct', async () => {
-      const { funding } = await fundingContext.createFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
+      const { funding } = await fundingContext.createPoeFunding(factory, [moneyMarket.address, operator, fundingContext.oracle.address, fundingContext.jobId, 100, 10])
       assert.equal(await funding.ticketPrice(), 10, 'ticket price initialized')
     })
   })
