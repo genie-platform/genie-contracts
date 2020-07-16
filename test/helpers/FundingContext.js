@@ -49,7 +49,7 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
     return factory
   }
 
-  this.createFunding = async (factory, rest) => {
+  this.createPoeFunding = async (factory, rest) => {
     let args
     if (rest.length < 4) {
       args = [...rest, this.oracle.address, jobId, 100, 0]
@@ -61,7 +61,7 @@ module.exports = function PoolContext({ web3, artifacts, accounts }) {
       args = rest
     }
     // const args = rest.length < 4 ? [...rest, '', '', 100, 0] : rest.length < 5 ? [...rest, 100, 0] : rest
-    const result = await factory.createFunding(...args)
+    const result = await factory.createPoeFunding(...args)
     let fundingAddress
     truffleAssert.eventEmitted(result, 'FundingCreated', (ev) => {
       fundingAddress = ev.funding
