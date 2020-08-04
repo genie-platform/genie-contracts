@@ -7,9 +7,9 @@ import "./FundingOracleClient.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts-ethereum-package/contracts/utils/Counters.sol";
 
-contract FundingFactory is Initializable,ERC721UpgradeSafe {
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+contract FundingFactory is Initializable {
+    // using Counters for Counters.Counter;
+    // Counters.Counter private _tokenIds;
 
     event FundingCreated( 
         address indexed funding,
@@ -55,7 +55,8 @@ contract FundingFactory is Initializable,ERC721UpgradeSafe {
     }
 
     function createFundingWithNft(
-        address _nftToken,
+        address _nftContract,
+        uint256 _nftTokenId
         address _operator,
         address _oracle,
         bytes32 _jobId,
@@ -65,8 +66,8 @@ contract FundingFactory is Initializable,ERC721UpgradeSafe {
         string memory _sym,
         string memory _baseURI
     ) public returns(address fundingAddress){
-       __ERC721_init(_name, _sym);
-        _tokenIds.increment();
+    //    __ERC721_init(_name, _sym);
+        // _tokenIds.increment();
        // uint256 newItemId = _tokenIds.current();//will be done in Funding.sol
         _setBaseURI(_baseURI); //;(newItemId, tokenURI);//used setBaseURI since tokens will share almost the same metadata url
         // _mint(winner, newItemId);//will be done uin Funding .sol
@@ -78,7 +79,8 @@ contract FundingFactory is Initializable,ERC721UpgradeSafe {
         );
         Funding funding = new Funding(
             msg.sender,
-            _nftToken,
+            _nftContract,
+            _nftTokenId,
             _operator,
             address(oracle),
             _ticketPrice
